@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project default="testIncludes" basedir="." xmlns:ca="antlib:net.sourceforge.clearantlib">
+
+	<!-- Use this prop if testing with maven -->
+ 	<property name="test.resources.dir" value="${basedir}/src/test/resources" />
+
+	<!-- Use this prop if testing in ide -->
+	<!--<property name="test.resources.dir" value="${basedir}" />-->
+	
+	<property name="temp.dir" value="${test.resources.dir}/temp" />
+	
+	<target name="clean">
+		<delete dir="${temp.dir}" />
+		<mkdir dir="${temp.dir}"/>
+	</target>
+
+	<target name="makeTask" depends="clean">
+
+		<path id="jshint.classpath">
+			<fileset dir="${test.resources.dir}/../../../target"
+				includes="ant-jshint-test-jar-with-dependencies.jar" />
+		</path>
+
+		<taskdef name="jshint" classname="com.philmander.ant.jshint.JsHintAntTask">
+			<classpath refid="jshint.classpath" />
+		</taskdef>
+	</target>
+
+	<target name="testIncludes" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js">
+			<include name="**/*.js" />
+		</jshint>
+
+	</target>
+
+	<target name="testOptions" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js" options="forin=false,curly=true">
+			<include name="test-options.js" />
+		</jshint>
+
+	</target>
+
+	<target name="testOptionsFile" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js" optionsFile="${test.resources.dir}/jshint.properties">
+			<include name="test-optionsfile.js" />
+		</jshint>
+
+	</target>
+
+	<target name="testCustomHintFile" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js" jshintFile="${test.resources.dir}/my-jshint.js">
+			<include name="test-optionsfile.js" />
+		</jshint>
+
+	</target>
+
+	<target name="testReportFile" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js" reportFile="${temp.dir}/report.txt" fail="false">
+			<include name="**/*.js" />
+		</jshint>
+
+	</target>
+
+</project>
