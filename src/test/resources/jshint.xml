@@ -2,7 +2,7 @@
 <project default="testIncludes" basedir="." xmlns:ca="antlib:net.sourceforge.clearantlib">
 
 	<!-- Use this prop if testing with maven -->
- 	<property name="test.resources.dir" value="${basedir}/src/test/resources" />
+	<property name="test.resources.dir" value="${basedir}/src/test/resources" />
 
 	<!-- Use this prop if testing in ide -->
 	<!--<property name="test.resources.dir" value="${basedir}" />-->
@@ -36,7 +36,7 @@
 
 	<target name="testOptions" depends="makeTask">
 
-		<jshint dir="${test.resources.dir}/js" options="forin=false,curly=true">
+		<jshint dir="${test.resources.dir}/js" options="forin=true,curly=true">
 			<include name="test-options.js" />
 		</jshint>
 
@@ -44,8 +44,8 @@
 
 	<target name="testOptionsFile" depends="makeTask">
 
-		<jshint dir="${test.resources.dir}/js" optionsFile="${test.resources.dir}/jshint.properties">
-			<include name="test-optionsfile.js" />
+		<jshint dir="${test.resources.dir}/js" optionsFile="${test.resources.dir}/jshint-options.properties">
+			<include name="test-options-file.js" />
 		</jshint>
 
 	</target>

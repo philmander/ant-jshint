@@ -8,10 +8,8 @@ this.errors = this.errors || [];
 
 //run jshint
 var result = JSHINT(this.currentCode, this.jsHintOpts);
-if(!result)
-{
-	for (var i = 0, err; err = JSHINT.errors[i]; i++) 
-	{		
+if(!result) {
+	for (var i = 0, err; err = JSHINT.errors[i]; i++) {		
 		this.errors.push({
 			file: this.currentFile, 
 			reason: err.reason, 

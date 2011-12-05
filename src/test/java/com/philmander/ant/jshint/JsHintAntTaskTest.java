@@ -22,7 +22,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     }
 
     @Test
-    public void testTask() throws IOException
+    public void testTask_includes() throws IOException
     {
     	try {
     		executeTarget("testIncludes");	
@@ -30,27 +30,38 @@ public class JsHintAntTaskTest extends BuildFileTest
     		int expectedErrors = 8;
     		assertEquals(JsHintAntTask.getFailureMessage(expectedErrors), e.getMessage());
     	}
-    	
+    }
+    
+    @Test
+    public void testTask_options() throws IOException {
     	try {
     		executeTarget("testOptions");	
     	} catch(BuildException e) {
-    		int expectedErrors = 1;
+    		int expectedErrors = 2;
     		assertEquals(JsHintAntTask.getFailureMessage(expectedErrors), e.getMessage());
     	}
-    	
+	}
+	@Test
+	public void testTask_optionsFile() throws IOException {
     	try {
     		executeTarget("testOptionsFile");	
     	} catch(BuildException e) {
     		int expectedErrors = 4;
     		assertEquals(JsHintAntTask.getFailureMessage(expectedErrors), e.getMessage());
     	}
-    	
+	}
+	
+	@Test
+	public void testTask_customFile() throws IOException {	
     	try {
     		executeTarget("testCustomHintFile");	
     	} catch(BuildException e) {
     		fail("This test should not find any errors\n" + e.getMessage());
     	}
-    	
+	}
+	
+	@Test
+	public void testTask_report() throws IOException {
     	
     	File reportFile = new File("src/test/resources/temp/report.txt");
     	assertFalse(reportFile.exists());
@@ -60,7 +71,6 @@ public class JsHintAntTaskTest extends BuildFileTest
     		fail("This test should not find any errors\n" + e.getMessage());
     	}
     	assertTrue(reportFile.exists());
-    	assertTrue(reportFile.length() > 0);
-    	
+    	assertTrue(reportFile.length() > 0);    	
     }
 }

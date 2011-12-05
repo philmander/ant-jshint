@@ -75,7 +75,7 @@ public class JsHintAntTask extends MatchingTask {
 			// user options
 			Properties options = loadOptions();
 			for (Object key : options.keySet()) {
-				boolean optionValue = Boolean.valueOf((String)options.get(key));
+				boolean optionValue = Boolean.valueOf((String) options.get(key));
 				jsHintOpts.defineProperty((String) key, optionValue, ScriptableObject.DONTENUM);
 			}
 
@@ -167,6 +167,18 @@ public class JsHintAntTask extends MatchingTask {
 				props.put(optionPair[0].trim(), optionPair[1].trim());
 			}
 		}
+
+		// log combined properties
+		StringBuilder opts = new StringBuilder();
+		for (Object optName : props.keySet()) {
+			boolean val = Boolean.valueOf(props.getProperty((String) optName));
+			opts.append(optName + "=" + val + ",");
+		}
+		if (props.size() > 0) {
+			opts.deleteCharAt(opts.length() - 1);
+		}
+		log("Using options: " + opts);
+
 		return props;
 	}
 
@@ -190,7 +202,6 @@ public class JsHintAntTask extends MatchingTask {
 			report.append("\n");
 			report.append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date()));
 
-			
 			try {
 				File outFile = new File(reportFile);
 				Files.createParentDirs(outFile);
