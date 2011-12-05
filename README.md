@@ -56,11 +56,11 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
   </jshint>
 ```
 `/options.properties`
-```text
-evil=true
-forin=true
-devel=false
-```
+ 
+    evil=true
+    forin=true
+    devel=false
+
 
 ###Use for reporting purposes
 ```xml
