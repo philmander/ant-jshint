@@ -26,7 +26,7 @@ public class JsHintAntTask extends MatchingTask {
 
 	private boolean fail = true;
 
-	private String jshintFile = null;
+	private String jshintSrc = null;
 
 	private String optionsFile = null;
 
@@ -53,7 +53,7 @@ public class JsHintAntTask extends MatchingTask {
 			String jsHintFile = "/jshint.js";
 
 			// get js hint source from classpath or user file
-			InputStream jsHintIn = jshintFile != null ? new FileInputStream(new File(jshintFile)) : this.getClass()
+			InputStream jsHintIn = jshintSrc != null ? new FileInputStream(new File(jshintSrc)) : this.getClass()
 					.getResourceAsStream(jsHintFile);
 			JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(jsHintFile, jsHintIn);
 
@@ -295,10 +295,10 @@ public class JsHintAntTask extends MatchingTask {
 	 * The JSHint ant task is packaged with an embedded copy of jshint. But a
 	 * user can specify there another copy of jshint using this attribute
 	 * 
-	 * @param jshint
+	 * @param jshintSrc
 	 *            The location of the jshint.js file to use
 	 */
-	public void setJshintFile(String jshint) {
-		this.jshintFile = jshint;
+	public void setJshintSrc(String jshintSrc) {
+		this.jshintSrc = jshintSrc;
 	}
 }

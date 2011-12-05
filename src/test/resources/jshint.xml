@@ -52,7 +52,7 @@
 
 	<target name="testCustomHintFile" depends="makeTask">
 
-		<jshint dir="${test.resources.dir}/js" jshintFile="${test.resources.dir}/my-jshint.js">
+		<jshint dir="${test.resources.dir}/js" jshintSrc="${test.resources.dir}/my-jshint.js">
 			<include name="test-optionsfile.js" />
 		</jshint>
 
