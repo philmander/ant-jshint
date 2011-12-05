@@ -55,7 +55,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
     <excluded name="**/*.min.js"/>
   </jshint>
 ```
-`/options.properties`
+`jshint/options.properties`:
  
     evil=true
     forin=true
