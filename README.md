@@ -56,7 +56,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
   </jshint>
 ```
 `/options.properties`
-```
+```text
 evil=true
 forin=true
 devel=false
