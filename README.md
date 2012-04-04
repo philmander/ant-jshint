@@ -36,7 +36,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 ```xml
   <jshint dir="${basedir}/src/js">
     <include name="**/*.js"/>
-    <excluded name="**/*.min.js"/>
+    <exclude name="**/*.min.js"/>
   </jshint>
 ```
 
@@ -44,7 +44,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 ```xml
   <jshint dir="${basedir}/src/js" options="evil=true,forin=true,devel=false">
     <include name="**/*.js"/>
-    <excluded name="**/*.min.js"/>
+    <exclude name="**/*.min.js"/>
   </jshint>
 ```
 
@@ -52,7 +52,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 ```xml
   <jshint dir="${basedir}/src/js" optionsFile="${basedir}/jshint/options.properties">
     <include name="**/*.js"/>
-    <excluded name="**/*.min.js"/>
+    <exclude name="**/*.min.js"/>
   </jshint>
 ```
 `jshint/options.properties`:
@@ -66,6 +66,6 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 ```xml
   <jshint dir="${basedir}/src/js" reportFile="${basedir}/jshint/results.txt" fail="false">
     <include name="**/*.js"/>
-    <excluded name="**/*.min.js"/>
+    <exclude name="**/*.min.js"/>
   </jshint>
 ```
