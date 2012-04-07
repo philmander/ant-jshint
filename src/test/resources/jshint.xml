@@ -7,7 +7,7 @@
 	<!-- Use this prop if testing in ide -->
 	<!--<property name="test.resources.dir" value="${basedir}" />-->
 	
-	<property name="temp.dir" value="${test.resources.dir}/temp" />
+	<property name="temp.dir" value="${basedir}/target/temp" />
 	
 	<target name="clean">
 		<delete dir="${temp.dir}" />

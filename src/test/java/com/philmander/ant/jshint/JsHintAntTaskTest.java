@@ -63,7 +63,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	@Test
 	public void testTask_report() throws IOException {
     	
-    	File reportFile = new File("src/test/resources/temp/report.txt");
+    	File reportFile = new File("target/temp/report.txt");
     	assertFalse(reportFile.exists());
     	try {
     		executeTarget("testReportFile");	
