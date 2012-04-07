@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<!-- 
+	Run this file directly with Ant. To test the task , but run an mvn package first so the jar is available.
+-->
+
+<project default="jshint" basedir="." xmlns:ca="antlib:net.sourceforge.clearantlib">
+
+	<!-- Use this prop if testing with maven -->
+	<property name="test.resources.dir" value="${basedir}/../resources" />
+
+	<!-- Use this prop if testing in ide -->
+	<!--<property name="test.resources.dir" value="${basedir}" />-->
+	
+	<property name="target.dir" value="${test.resources.dir}/../../../target" />
+	<property name="temp.dir" value="${target.dir}/temp" />
+	
+	<target name="clean">
+		<delete dir="${temp.dir}" />
+		<mkdir dir="${temp.dir}"/>
+	</target>
+
+	<target name="makeTask" depends="clean">
+
+		<!-- Run mvn package to find the jar -->
+		<path id="jshint.classpath">
+			<fileset dir="${target.dir}" includes="ant-jshint-test-jar-with-dependencies.jar" />
+		</path>
+
+		<taskdef name="jshint" classname="com.philmander.ant.jshint.JsHintAntTask">
+			<classpath refid="jshint.classpath" />
+		</taskdef>
+	</target>
+
+	<target name="jshint" depends="makeTask">
+
+		<jshint dir="${basedir}" 
+				jshintSrc="${test.resources.dir}/my-jshint.js"  
+				reportFile="${temp.dir}/report.txt" 
+				fail="true">
+			<include name="**/*.js" />
+			<exclude name="**/*.min.js" />
+		</jshint>
+
+	</target>
+
+
+</project>

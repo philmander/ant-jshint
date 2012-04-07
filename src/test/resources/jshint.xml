@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
+
+<!-- Run this via mvn test -->
+
 <project default="testIncludes" basedir="." xmlns:ca="antlib:net.sourceforge.clearantlib">
 
 	<!-- Use this prop if testing with maven -->
