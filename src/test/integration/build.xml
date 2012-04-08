@@ -6,36 +6,34 @@
 
 <project default="jshint" basedir="." xmlns:ca="antlib:net.sourceforge.clearantlib">
 
-	<!-- Use this prop if testing with maven -->
-	<property name="test.resources.dir" value="${basedir}/../resources" />
-
-	<!-- Use this prop if testing in ide -->
-	<!--<property name="test.resources.dir" value="${basedir}" />-->
+	<property name="target.dir" value="${basedir}/../../../target" />
+	<!--<property name="temp.dir" value="${target.dir}/jshint-report" />-->
+	<property name="temp.dir" value="${basedir}/jshint-report" />
 	
-	<property name="target.dir" value="${test.resources.dir}/../../../target" />
-	<property name="temp.dir" value="${target.dir}/temp" />
+	<property name="jshint.file" value="${basedir}/jshint/jshint-r06.js" />
 	
 	<target name="clean">
 		<delete dir="${temp.dir}" />
 		<mkdir dir="${temp.dir}"/>
 	</target>
 
-	<target name="makeTask" depends="clean">
+	<target name="makeTask" depends="">
 
 		<!-- Run mvn package to find the jar -->
 		<path id="jshint.classpath">
 			<fileset dir="${target.dir}" includes="ant-jshint-test-jar-with-dependencies.jar" />
 		</path>
 
-		<taskdef name="jshint" classname="com.philmander.ant.jshint.JsHintAntTask">
+		<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask">
 			<classpath refid="jshint.classpath" />
 		</taskdef>
 	</target>
 
 	<target name="jshint" depends="makeTask">
 
-		<jshint dir="${basedir}" 
-				jshintSrc="${test.resources.dir}/my-jshint.js"  
+		<jshint dir="${basedir}/js-samples" 
+				options="evil=true,forin=true,devel=false"
+				jshintSrc="${jshint.file}"  
 				reportFile="${temp.dir}/report.txt" 
 				fail="true">
 			<include name="**/*.js" />
@@ -43,6 +41,5 @@
 		</jshint>
 
 	</target>
-
 
 </project>

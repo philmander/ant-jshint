@@ -1,4 +1,4 @@
-package com.philmander.ant.jshint;
+package com.philmander.ant;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,12 +50,13 @@ public class JsHintAntTask extends MatchingTask {
 
 		try {
 			// get js hint
-			String jsHintFile = "/jshint.js";
+			String jsHintFileName = "/jshint.js";
 
 			// get js hint source from classpath or user file
-			InputStream jsHintIn = jshintSrc != null ? new FileInputStream(new File(jshintSrc)) : this.getClass()
-					.getResourceAsStream(jsHintFile);
-			JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(jsHintFile, jsHintIn);
+			InputStream jsHintIn = jshintSrc != null ?
+					new FileInputStream(new File(jshintSrc)) : this.getClass().getResourceAsStream(jsHintFileName);
+			
+			JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(jsHintFileName, jsHintIn);
 
 			String runJsHintFile = "/jshint-runner.js";
 			InputStream runJsHintIn = this.getClass().getResourceAsStream(runJsHintFile);
@@ -103,13 +104,13 @@ public class JsHintAntTask extends MatchingTask {
 				// extract errors and report
 				StringBuilder errorLog = new StringBuilder();
 				Scriptable errors = (Scriptable) global.get("errors", global);
-				int numErrors = ((Double) errors.get("length", global)).intValue();
+				int numErrors = ((Number) errors.get("length", global)).intValue();
 				for (int i = 0; i < numErrors; i++) {
 					Scriptable errorDetail = (Scriptable) errors.get(i, global);
 					String file = (String) errorDetail.get("file", global);
 					String reason = (String) errorDetail.get("reason", global);
-					int line = ((Double) errorDetail.get("line", global)).intValue();
-					int character = ((Double) errorDetail.get("character", global)).intValue();
+					int line = ((Number) errorDetail.get("line", global)).intValue();
+					int character = ((Number) errorDetail.get("character", global)).intValue();
 					String evidence = (String) errorDetail.get("evidence", global);
 
 					errorLog.append("JSHint code check failed for " + file + "\n");
@@ -119,7 +120,10 @@ public class JsHintAntTask extends MatchingTask {
 				}
 
 				log(errorLog.toString());
-
+				
+				reportResults(files.length, numErrors, errorLog.toString());
+				
+				//pass or fail ?
 				if (numErrors > 0) {
 
 					String message = getFailureMessage(numErrors);
@@ -132,7 +136,7 @@ public class JsHintAntTask extends MatchingTask {
 					log(getSuccessMessage(files.length));
 				}
 
-				reportResults(files.length, numErrors, errorLog.toString());
+				
 			} else {
 				log("0 JS files found");
 			}
@@ -183,6 +187,7 @@ public class JsHintAntTask extends MatchingTask {
 	}
 
 	private void reportResults(int numFiles, int numErrors, String errorLog) {
+		
 		if (reportFile != null) {
 
 			StringBuilder report = new StringBuilder();

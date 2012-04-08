@@ -1,4 +1,4 @@
-package com.philmander.ant.jshint;
+package com.philmander.ant;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
 import org.junit.Test;
 
-import com.philmander.ant.jshint.JsHintAntTask;
+import com.philmander.ant.JsHintAntTask;
 
 /**
  * @author Phil Mander

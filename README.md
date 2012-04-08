@@ -1,12 +1,12 @@
 #Ant task for JSHint
 
-Easily automate JSHint (http://www.jshint.com/) validation on your Javascript code base with Ant.
+Easily automate JSHint (http://www.jshint.com/) validation on your Javascript code base with Apache Ant.
 
 To get started download the ant-jshint jar file and include the following code in your Ant build file.
 
 ```xml
 <!-- Define the task -->
-<taskdef name="jshint" classname="com.philmander.ant.jshint.JsHintAntTask" 
+<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask" 
     classpath="${basedir}/jshint/ant-jshint-R0.1.jar" />
 
 <target name="runJsHint">
@@ -33,6 +33,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 ##Usage examples
 
 ###Typical fileset
+Lint all JS except minimized source files:
 ```xml
   <jshint dir="${basedir}/src/js">
     <include name="**/*.js"/>
@@ -40,7 +41,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
   </jshint>
 ```
 
-###Setting options
+###Setting JSHint options
 ```xml
   <jshint dir="${basedir}/src/js" options="evil=true,forin=true,devel=false">
     <include name="**/*.js"/>
@@ -63,9 +64,18 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 
 
 ###Use for reporting purposes
+The task will not fail upon jshint errors and will write results to a text file:
 ```xml
-  <jshint dir="${basedir}/src/js" reportFile="${basedir}/jshint/results.txt" fail="false">
+  <jshint dir="${basedir}/src/js" fail="false" reportFile="${basedir}/jshint/results.txt">
     <include name="**/*.js"/>
     <exclude name="**/*.min.js"/>
   </jshint>
 ```
+
+## Fork and run locally ##
+
+Ant-Jshint is built using Apache Maven. 
+
+To run tests against your code run `mvn test`
+
+To create a jar file run `mvn package`

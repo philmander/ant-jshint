@@ -24,7 +24,7 @@
 				includes="ant-jshint-test-jar-with-dependencies.jar" />
 		</path>
 
-		<taskdef name="jshint" classname="com.philmander.ant.jshint.JsHintAntTask">
+		<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask">
 			<classpath refid="jshint.classpath" />
 		</taskdef>
 	</target>
