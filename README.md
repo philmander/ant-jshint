@@ -7,7 +7,7 @@ To get started download the ant-jshint jar file and include the following code i
 ```xml
 <!-- Define the task -->
 <taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask" 
-    classpath="${basedir}/jshint/ant-jshint-R0.1.jar" />
+    classpath="${basedir}/jshint/ant-jshint-0.2.jar" />
 
 <target name="runJsHint">
   
