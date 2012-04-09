@@ -36,28 +36,28 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 Lint all JS except minimized source files
 
 ```xml
-  <jshint dir="${basedir}/src/js">
+<jshint dir="${basedir}/src/js">
     <include name="**/*.js"/>
     <exclude name="**/*.min.js"/>
-  </jshint>
+</jshint>
 ```
 
 ###Setting JSHint options
 
 ```xml
-  <jshint dir="${basedir}/src/js" options="evil=true,forin=true,devel=false">
+<jshint dir="${basedir}/src/js" options="evil=true,forin=true,devel=false">
     <include name="**/*.js"/>
     <exclude name="**/*.min.js"/>
-  </jshint>
+</jshint>
 ```
 
 ###Setting options in an external file
 
 ```xml
-  <jshint dir="${basedir}/src/js" optionsFile="${basedir}/jshint/options.properties">
+<jshint dir="${basedir}/src/js" optionsFile="${basedir}/jshint/options.properties">
     <include name="**/*.js"/>
     <exclude name="**/*.min.js"/>
-  </jshint>
+</jshint>
 ```
 `jshint/options.properties`:
  
@@ -69,10 +69,10 @@ Lint all JS except minimized source files
 ###Use for reporting purposes
 The task will not fail upon jshint errors and will write results to a text file:
 ```xml
-  <jshint dir="${basedir}/src/js" fail="false" reportFile="${basedir}/jshint/results.txt">
-    <include name="**/*.js"/>
-    <exclude name="**/*.min.js"/>
-  </jshint>
+<jshint dir="${basedir}/src/js" fail="false" reportFile="${basedir}/jshint/results.txt">
+	<include name="**/*.js"/>
+	<exclude name="**/*.min.js"/>
+</jshint>
 ```
 
 ## Running the task in Maven ##
@@ -89,38 +89,38 @@ or downloading the jar release and running
 Now use the antrun plugin to add jshint to your Maven build
 
 ```xml
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-antrun-plugin</artifactId>
-		<version>1.7</version>
-		<executions>
-			<execution>
-				<id>jshint</id>
-				<phase>validate</phase>
-				<configuration>
-					<target>
-						<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask"
-							classpathref="maven.plugin.classpath" />
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-antrun-plugin</artifactId>
+	<version>1.7</version>
+	<executions>
+		<execution>
+			<id>jshint</id>
+			<phase>validate</phase>
+			<configuration>
+				<target>
+					<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask"
+						classpathref="maven.plugin.classpath" />
 
-						<jshint dir="${project.basedir}/js-samples" options="evil=true,forin=true,devel=false">
-							<include name="**/*.js" />
-							<exclude name="**/*.min.js" />
-						</jshint>
-					</target>
-				</configuration>
-				<goals>
-					<goal>run</goal>
-				</goals>
-			</execution>
-		</executions>
-		<dependencies>
-			<dependency>
-				<groupId>com.philmander.ant</groupId>
-				<artifactId>ant-jshint</artifactId>
-				<version>0.2</version>
-			</dependency>
-		</dependencies>
-	</plugin>
+					<jshint dir="${project.basedir}/js-samples" options="evil=true,forin=true,devel=false">
+						<include name="**/*.js" />
+						<exclude name="**/*.min.js" />
+					</jshint>
+				</target>
+			</configuration>
+			<goals>
+				<goal>run</goal>
+			</goals>
+		</execution>
+	</executions>
+	<dependencies>
+		<dependency>
+			<groupId>com.philmander.ant</groupId>
+			<artifactId>ant-jshint</artifactId>
+			<version>0.2</version>
+		</dependency>
+	</dependencies>
+</plugin>
 ```
 ## Fork and run locally ##
 
