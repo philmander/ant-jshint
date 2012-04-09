@@ -21,7 +21,7 @@
 
 		<!-- Run mvn package to find the jar -->
 		<path id="jshint.classpath">
-			<fileset dir="${target.dir}" includes="ant-jshint-test-jar-with-dependencies.jar" />
+			<fileset dir="${target.dir}" includes="ant-jshint-0.2-deps.jar" />
 		</path>
 
 		<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask">

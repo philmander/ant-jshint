@@ -33,7 +33,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 ##Usage examples
 
 ###Typical fileset
-Lint all JS except minimized source files:
+Lint all JS except minimized source files
 ```xml
   <jshint dir="${basedir}/src/js">
     <include name="**/*.js"/>

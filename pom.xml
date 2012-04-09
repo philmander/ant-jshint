@@ -34,16 +34,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -67,7 +57,7 @@
 				<executions>
 					<execution>
 						<id>single</id>
-						<phase>compile</phase>
+						<phase>generate-test-resources</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
@@ -120,7 +110,7 @@
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<configuration>
-							<finalName>ant-jshint-R${project.version}</finalName>
+							<finalName>ant-jshint-${project.version}-deps</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>

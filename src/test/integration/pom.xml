@@ -5,7 +5,7 @@
 	<artifactId>ant-jshint-test</artifactId>
 	<version>0.1</version>
 	<name>ant-jshint-test</name>
-	<description>Runs ant task for jshint in maven</description>
+	<description>Example of running ant-jshint in maven</description>
 
 	<build>
 		<plugins>
