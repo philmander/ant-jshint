@@ -34,6 +34,7 @@ The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.
 
 ###Typical fileset
 Lint all JS except minimized source files
+
 ```xml
   <jshint dir="${basedir}/src/js">
     <include name="**/*.js"/>
@@ -42,6 +43,7 @@ Lint all JS except minimized source files
 ```
 
 ###Setting JSHint options
+
 ```xml
   <jshint dir="${basedir}/src/js" options="evil=true,forin=true,devel=false">
     <include name="**/*.js"/>
@@ -50,6 +52,7 @@ Lint all JS except minimized source files
 ```
 
 ###Setting options in an external file
+
 ```xml
   <jshint dir="${basedir}/src/js" optionsFile="${basedir}/jshint/options.properties">
     <include name="**/*.js"/>
