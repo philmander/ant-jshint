@@ -75,6 +75,53 @@ The task will not fail upon jshint errors and will write results to a text file:
   </jshint>
 ```
 
+## Running the task in Maven ##
+
+Ant-Jshint isn't deployed to the Maven Central Repository yet, but you can install locally either by cloning the 
+project and running
+
+`mvn install`
+
+or downloading the jar release and running
+
+`mvn install:install-file -Dfile=/path/to/ant-jshint-0.2.deps.jar -DgroupId=com.philmander.ant -DartifactId=ant-jshint -Dversion=0.2 -Dpackaging=jar`
+
+Now use the antrun plugin to add jshint to your Maven build
+
+```xml
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-antrun-plugin</artifactId>
+		<version>1.7</version>
+		<executions>
+			<execution>
+				<id>jshint</id>
+				<phase>validate</phase>
+				<configuration>
+					<target>
+						<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask"
+							classpathref="maven.plugin.classpath" />
+
+						<jshint dir="${project.basedir}/js-samples" options="evil=true,forin=true,devel=false">
+							<include name="**/*.js" />
+							<exclude name="**/*.min.js" />
+						</jshint>
+					</target>
+				</configuration>
+				<goals>
+					<goal>run</goal>
+				</goals>
+			</execution>
+		</executions>
+		<dependencies>
+			<dependency>
+				<groupId>com.philmander.ant</groupId>
+				<artifactId>ant-jshint</artifactId>
+				<version>0.2</version>
+			</dependency>
+		</dependencies>
+	</plugin>
+```
 ## Fork and run locally ##
 
 Ant-Jshint is built using Apache Maven. 
