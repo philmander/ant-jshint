@@ -5,7 +5,23 @@
 	<artifactId>ant-jshint</artifactId>
 	<version>0.2</version>
 	<name>ant-jshint</name>
+	<packaging>jar</packaging>
 	<description>Ant task for jshint</description>
+
+	<url>https://github.com/philmander/ant-jshint</url>
+
+	<licenses>
+		<license>
+			<name>The MIT License (MIT)</name>
+			<url>https://github.com/philmander/ant-jshint/blob/master/license.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/philmander/ant-jshint</url>
+	</scm>
+	
 	<dependencies>
 
 		<dependency>
@@ -44,7 +60,6 @@
 					<target>5</target>
 				</configuration>
 			</plugin>
-
 
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -85,7 +100,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
