@@ -8,9 +8,12 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.taskdefs.Echo;
+import org.apache.tools.ant.taskdefs.Echo.EchoLevel;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -53,9 +56,9 @@ public class JsHintAntTask extends MatchingTask {
 			String jsHintFileName = "/jshint.js";
 
 			// get js hint source from classpath or user file
-			InputStream jsHintIn = jshintSrc != null ?
-					new FileInputStream(new File(jshintSrc)) : this.getClass().getResourceAsStream(jsHintFileName);
-			
+			InputStream jsHintIn = jshintSrc != null ? new FileInputStream(new File(jshintSrc)) : this.getClass()
+					.getResourceAsStream(jsHintFileName);
+
 			JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(jsHintFileName, jsHintIn);
 
 			String runJsHintFile = "/jshint-runner.js";
@@ -106,24 +109,40 @@ public class JsHintAntTask extends MatchingTask {
 				Scriptable errors = (Scriptable) global.get("errors", global);
 				int numErrors = ((Number) errors.get("length", global)).intValue();
 				for (int i = 0; i < numErrors; i++) {
+					
+					//log detail for each error
 					Scriptable errorDetail = (Scriptable) errors.get(i, global);
-					String file = (String) errorDetail.get("file", global);
-					String reason = (String) errorDetail.get("reason", global);
-					int line = ((Number) errorDetail.get("line", global)).intValue();
-					int character = ((Number) errorDetail.get("character", global)).intValue();
-					String evidence = (String) errorDetail.get("evidence", global);
 
+					Object file = errorDetail.get("file", global);
+					Object reason = errorDetail.get("reason", global);
+					Object line = errorDetail.get("line", global);
+					Object character = errorDetail.get("character", global);
+					Object evidence = errorDetail.get("evidence", global);
 					errorLog.append("JSHint code check failed for " + file + "\n");
-					errorLog.append(reason + " (line: " + line + ", character: " + character + ")\n");
-					errorLog.append(" > " + evidence.replace("^\\s*(\\S*(\\s+\\S+)*)\\s*$", "$1"));
+
+					try {
+						errorLog.append(reason + " (line: " + ((Number) line).intValue() + ", character: "
+								+ ((Number) character).intValue() + ")\n");
+						errorLog.append(" > " + ((String) evidence).replace("^\\s*(\\S*(\\s+\\S+)*)\\s*$", "$1"));
+					} catch (ClassCastException e) {
+
+						// print error without any casting. Should work but not
+						// as pretty
+						errorLog.append(reason + " (line: " + line + ", character: " + character + ")\n");
+						errorLog.append(" > " + evidence);
+
+						// TODO: See issue #1. Why is this happening?
+						log("Problem casting JShint error variable for previous error. This is a minor issue (#1) and this message is here for debugging purposoes("
+								+ e.getMessage() + ")", e, EchoLevel.WARN.getLevel());
+					}
 					errorLog.append("\n");
 				}
 
 				log(errorLog.toString());
-				
+
 				reportResults(files.length, numErrors, errorLog.toString());
-				
-				//pass or fail ?
+
+				// pass or fail ?
 				if (numErrors > 0) {
 
 					String message = getFailureMessage(numErrors);
@@ -136,7 +155,6 @@ public class JsHintAntTask extends MatchingTask {
 					log(getSuccessMessage(files.length));
 				}
 
-				
 			} else {
 				log("0 JS files found");
 			}
@@ -187,7 +205,7 @@ public class JsHintAntTask extends MatchingTask {
 	}
 
 	private void reportResults(int numFiles, int numErrors, String errorLog) {
-		
+
 		if (reportFile != null) {
 
 			StringBuilder report = new StringBuilder();

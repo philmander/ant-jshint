@@ -21,7 +21,7 @@
 
 		<!-- Run mvn package to find the jar -->
 		<path id="jshint.classpath">
-			<fileset dir="${target.dir}" includes="ant-jshint-0.2-deps.jar" />
+			<fileset dir="${target.dir}" includes="ant-jshint-0.2.1-deps.jar" />
 		</path>
 
 		<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask">
@@ -35,7 +35,7 @@
 				options="evil=true,forin=true,devel=false"
 				jshintSrc="${jshint.file}"  
 				reportFile="${temp.dir}/report.txt" 
-				fail="true">
+				fail="false">
 			<include name="**/*.js" />
 			<exclude name="**/*.min.js" />
 		</jshint>
