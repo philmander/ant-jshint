@@ -68,6 +68,7 @@ Lint all JS except minimized source files
 
 ###Use for reporting purposes
 The task will not fail upon jshint errors and will write results to a text file:
+
 ```xml
 <jshint dir="${basedir}/src/js" fail="false" reportFile="${basedir}/jshint/results.txt">
 	<include name="**/*.js"/>
@@ -102,7 +103,7 @@ Now use the antrun plugin to add jshint to your Maven build
 					<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask"
 						classpathref="maven.plugin.classpath" />
 
-					<jshint dir="${project.basedir}/js-samples" options="evil=true,forin=true,devel=false">
+					<jshint dir="${project.basedir}/src/js" options="evil=true,forin=true,devel=false">
 						<include name="**/*.js" />
 						<exclude name="**/*.min.js" />
 					</jshint>
