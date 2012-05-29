@@ -4,25 +4,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.taskdefs.Echo;
-import org.apache.tools.ant.taskdefs.Echo.EchoLevel;
 import org.apache.tools.ant.taskdefs.MatchingTask;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.google.javascript.jscomp.JSSourceFile;
 
+/**
+ * Ant task to validate a set of files using JSHint
+ * 
+ * @author Phil Mander
+ * 
+ */
 public class JsHintAntTask extends MatchingTask {
 
 	private File dir;
@@ -42,105 +40,28 @@ public class JsHintAntTask extends MatchingTask {
 	 */
 	@Override
 	public void execute() throws BuildException {
+		
 		checkAttributes();
 
 		DirectoryScanner dirScanner = getDirectoryScanner(dir);
 		String[] files = dirScanner.getIncludedFiles();
 
-		Context ctx = Context.enter();
-		ctx.setLanguageVersion(Context.VERSION_1_5);
-		ScriptableObject global = ctx.initStandardObjects();
+		log("Validating files in " + dir.getAbsolutePath());
+		
+		if (files.length > 0) {
 
-		try {
-			// get js hint
-			String jsHintFileName = "/jshint.js";
+			try {
+				
+				//lint the code using the jshint runner
+				JsHintRunner runner = new JsHintRunner(jshintSrc);
+				JsHintResult result = runner.lint(dir, files, loadOptions());
+				
+				//get and report the results
+				String errorLog = result.getErrorLog().toString();
+				int numErrors = result.getNumErrors();
+				log(errorLog);
 
-			// get js hint source from classpath or user file
-			InputStream jsHintIn = jshintSrc != null ? new FileInputStream(new File(jshintSrc)) : this.getClass()
-					.getResourceAsStream(jsHintFileName);
-
-			JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(jsHintFileName, jsHintIn);
-
-			String runJsHintFile = "/jshint-runner.js";
-			InputStream runJsHintIn = this.getClass().getResourceAsStream(runJsHintFile);
-			JSSourceFile runJsHint = JSSourceFile.fromInputStream(runJsHintFile, runJsHintIn);
-
-			// load jshint
-			ctx.evaluateReader(global, jsHintSrc.getCodeReader(), jsHintSrc.getName(), 0, null);
-
-			// define properties to store current js source info
-			global.defineProperty("currentFile", "", ScriptableObject.DONTENUM);
-			global.defineProperty("currentCode", "", ScriptableObject.DONTENUM);
-
-			// jshint options
-			ScriptableObject jsHintOpts = (ScriptableObject) ctx.newObject(global);
-			jsHintOpts.defineProperty("rhino", true, ScriptableObject.DONTENUM);
-
-			// user options
-			Properties options = loadOptions();
-			for (Object key : options.keySet()) {
-				boolean optionValue = Boolean.valueOf((String) options.get(key));
-				jsHintOpts.defineProperty((String) key, optionValue, ScriptableObject.DONTENUM);
-			}
-
-			global.defineProperty("jsHintOpts", jsHintOpts, ScriptableObject.DONTENUM);
-
-			// define object to store errors
-			global.defineProperty("errors", ctx.newArray(global, 0), ScriptableObject.DONTENUM);
-
-			log("Validating files in " + dir.getAbsolutePath());
-
-			if (files.length > 0) {
-
-				// validate each file
-				for (String file : files) {
-
-					JSSourceFile jsFile = JSSourceFile.fromFile(dir.getAbsolutePath() + "/" + file);
-
-					// set current file on scope
-					global.put("currentFile", global, jsFile.getName());
-					global.put("currentCode", global, jsFile.getCode());
-
-					ctx.evaluateReader(global, runJsHint.getCodeReader(), runJsHint.getName(), 0, null);
-				}
-
-				// extract errors and report
-				StringBuilder errorLog = new StringBuilder();
-				Scriptable errors = (Scriptable) global.get("errors", global);
-				int numErrors = ((Number) errors.get("length", global)).intValue();
-				for (int i = 0; i < numErrors; i++) {
-					
-					//log detail for each error
-					Scriptable errorDetail = (Scriptable) errors.get(i, global);
-
-					Object file = errorDetail.get("file", global);
-					Object reason = errorDetail.get("reason", global);
-					Object line = errorDetail.get("line", global);
-					Object character = errorDetail.get("character", global);
-					Object evidence = errorDetail.get("evidence", global);
-					errorLog.append("JSHint code check failed for " + file + "\n");
-
-					try {
-						errorLog.append(reason + " (line: " + ((Number) line).intValue() + ", character: "
-								+ ((Number) character).intValue() + ")\n");
-						errorLog.append(" > " + ((String) evidence).replace("^\\s*(\\S*(\\s+\\S+)*)\\s*$", "$1"));
-					} catch (ClassCastException e) {
-
-						// print error without any casting. Should work but not
-						// as pretty
-						errorLog.append(reason + " (line: " + line + ", character: " + character + ")\n");
-						errorLog.append(" > " + evidence);
-
-						// TODO: See issue #1. Why is this happening?
-						log("Problem casting JShint error variable for previous error. This is a minor issue (#1) and this message is here for debugging purposoes("
-								+ e.getMessage() + ")", e, EchoLevel.WARN.getLevel());
-					}
-					errorLog.append("\n");
-				}
-
-				log(errorLog.toString());
-
-				reportResults(files.length, numErrors, errorLog.toString());
+				reportResults(files.length, numErrors, errorLog);
 
 				// pass or fail ?
 				if (numErrors > 0) {
@@ -155,13 +76,13 @@ public class JsHintAntTask extends MatchingTask {
 					log(getSuccessMessage(files.length));
 				}
 
-			} else {
-				log("0 JS files found");
+			} catch (IOException e) {
+				throw new BuildException(e);
 			}
-
-		} catch (IOException e) {
-			throw new BuildException(e);
+		} else {
+			log("0 JS files found");
 		}
+
 	}
 
 	private Properties loadOptions() {
