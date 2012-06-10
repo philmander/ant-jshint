@@ -1,4 +1,4 @@
-package com.philmander.ant;
+package com.philmander.jshint;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
 import org.junit.Test;
 
-import com.philmander.ant.JsHintAntTask;
+import com.philmander.jshint.JsHintAntTask;
+import com.philmander.jshint.report.PlainJsHintReporter;
 
 /**
  * @author Phil Mander
@@ -28,7 +29,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     		executeTarget("testIncludes");	
     	} catch(BuildException e) {
     		int expectedErrors = 8;
-    		assertEquals(JsHintAntTask.getFailureMessage(expectedErrors), e.getMessage());
+    		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
     }
     
@@ -38,7 +39,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     		executeTarget("testOptions");	
     	} catch(BuildException e) {
     		int expectedErrors = 2;
-    		assertEquals(JsHintAntTask.getFailureMessage(expectedErrors), e.getMessage());
+    		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
 	@Test
@@ -47,7 +48,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     		executeTarget("testOptionsFile");	
     	} catch(BuildException e) {
     		int expectedErrors = 4;
-    		assertEquals(JsHintAntTask.getFailureMessage(expectedErrors), e.getMessage());
+    		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
 	
@@ -63,14 +64,19 @@ public class JsHintAntTaskTest extends BuildFileTest
 	@Test
 	public void testTask_report() throws IOException {
     	
-    	File reportFile = new File("target/temp/report.txt");
-    	assertFalse(reportFile.exists());
+    	File reportPlain = new File("target/temp/jshint-report.txt");
+    	File reportXml = new File("target/temp/jshint-report.xml");
+    	assertFalse(reportPlain.exists());
+    	assertFalse(reportXml.exists());
     	try {
     		executeTarget("testReportFile");	
     	} catch(BuildException e) {
     		fail("This test should not find any errors\n" + e.getMessage());
     	}
-    	assertTrue(reportFile.exists());
-    	assertTrue(reportFile.length() > 0);    	
+    	assertTrue("Plain report does not exist", reportPlain.exists());
+    	assertTrue("Plain report file is empty", reportPlain.length() > 0);
+    	
+    	assertTrue("XML report does not exist", reportXml.exists());
+    	assertTrue("XML report file is empty", reportXml.length() > 0);   
     }
 }

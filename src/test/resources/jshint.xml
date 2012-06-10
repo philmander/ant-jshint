@@ -24,7 +24,7 @@
 				includes="ant-jshint-test-jar-with-dependencies.jar" />
 		</path>
 
-		<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask">
+		<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask">
 			<classpath refid="jshint.classpath" />
 		</taskdef>
 	</target>
@@ -63,7 +63,9 @@
 
 	<target name="testReportFile" depends="makeTask">
 
-		<jshint dir="${test.resources.dir}/js" reportFile="${temp.dir}/report.txt" fail="false">
+		<jshint dir="${test.resources.dir}/js" fail="false">
+			<report type="plain" destFile="${temp.dir}/jshint-report.txt"/>
+			<report type="xml" destFile="${temp.dir}/jshint-report.xml"/>
 			<include name="**/*.js" />
 		</jshint>
 

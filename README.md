@@ -6,7 +6,7 @@ To get started download the ant-jshint jar file and include the following code i
 
 ```xml
 <!-- Define the task -->
-<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask" 
+<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask" 
     classpath="${basedir}/jshint/ant-jshint-0.2-deps.jar" />
 
 <target name="runJsHint">
@@ -85,7 +85,7 @@ project and running
 
 or downloading the jar release and running
 
-`mvn install:install-file -Dfile=/path/to/ant-jshint-0.2.deps.jar -DgroupId=com.philmander.ant -DartifactId=ant-jshint -Dversion=0.2 -Dpackaging=jar`
+`mvn install:install-file -Dfile=/path/to/ant-jshint-0.2.deps.jar -DgroupId=com.philmander.jshint -DartifactId=ant-jshint -Dversion=0.2 -Dpackaging=jar`
 
 Now use the antrun plugin to add jshint to your Maven build
 
@@ -100,7 +100,7 @@ Now use the antrun plugin to add jshint to your Maven build
 			<phase>validate</phase>
 			<configuration>
 				<target>
-					<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask"
+					<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask"
 						classpathref="maven.plugin.classpath" />
 
 					<jshint dir="${project.basedir}/src/js" options="evil=true,forin=true,devel=false">
@@ -116,7 +116,7 @@ Now use the antrun plugin to add jshint to your Maven build
 	</executions>
 	<dependencies>
 		<dependency>
-			<groupId>com.philmander.ant</groupId>
+			<groupId>com.philmander.jshint</groupId>
 			<artifactId>ant-jshint</artifactId>
 			<version>0.2</version>
 		</dependency>

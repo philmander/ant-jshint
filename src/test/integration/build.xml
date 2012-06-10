@@ -24,7 +24,7 @@
 			<fileset dir="${target.dir}" includes="ant-jshint-0.2.1-deps.jar" />
 		</path>
 
-		<taskdef name="jshint" classname="com.philmander.ant.JsHintAntTask">
+		<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask">
 			<classpath refid="jshint.classpath" />
 		</taskdef>
 	</target>

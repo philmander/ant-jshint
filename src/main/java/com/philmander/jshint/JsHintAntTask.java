@@ -1,19 +1,23 @@
-package com.philmander.ant;
+package com.philmander.jshint;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.types.LogLevel;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.philmander.jshint.report.JsHintReporter;
+import com.philmander.jshint.report.PlainJsHintReporter;
+import com.philmander.jshint.report.XmlJsHintReporter;
 
 /**
  * Ant task to validate a set of files using JSHint
@@ -21,7 +25,7 @@ import com.google.common.io.Files;
  * @author Phil Mander
  * 
  */
-public class JsHintAntTask extends MatchingTask {
+public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 
 	private File dir;
 
@@ -33,47 +37,54 @@ public class JsHintAntTask extends MatchingTask {
 
 	private String options = null;
 
-	private String reportFile = null;
+	private List<ReportType> reports = new ArrayList<ReportType>();
+
+	public void addConfiguredReport(ReportType report) {
+		reports.add(report);
+	}
 
 	/**
 	 * Performs JSHint validation on a set of files
 	 */
 	@Override
 	public void execute() throws BuildException {
-		
+
 		checkAttributes();
 
 		DirectoryScanner dirScanner = getDirectoryScanner(dir);
 		String[] files = dirScanner.getIncludedFiles();
 
 		log("Validating files in " + dir.getAbsolutePath());
-		
+
 		if (files.length > 0) {
 
 			try {
-				
-				//lint the code using the jshint runner
-				JsHintRunner runner = new JsHintRunner(jshintSrc);
-				JsHintResult result = runner.lint(dir, files, loadOptions());
-				
-				//get and report the results
-				String errorLog = result.getErrorLog().toString();
-				int numErrors = result.getNumErrors();
-				log(errorLog);
 
-				reportResults(files.length, numErrors, errorLog);
+				// lint the code using the jshint runner
+				JsHintRunner runner = new JsHintRunner(jshintSrc);
+				runner.setLogger(this);
+
+				// create abolute file path for each file before passing to jshint
+				String[] absFiles = new String[files.length];
+				for (int i = 0; i < files.length; i++) {
+					absFiles[i] = dir + System.getProperty("file.separator") + files[i];
+				}
+				JsHintReport report = runner.lint(absFiles, loadOptions());
+
+				//TODO: move reporting to runner so it works for CLI too
+				reportResults(report);
 
 				// pass or fail ?
-				if (numErrors > 0) {
+				if (report.getTotalErrors() > 0) {
 
-					String message = getFailureMessage(numErrors);
+					String message = PlainJsHintReporter.getFailureMessage(report.getTotalErrors());
 					if (fail) {
 						throw new BuildException(message);
 					} else {
 						log(message);
 					}
 				} else {
-					log(getSuccessMessage(files.length));
+					log(PlainJsHintReporter.getSuccessMessage(report.getNumFiles()));
 				}
 
 			} catch (IOException e) {
@@ -125,34 +136,37 @@ public class JsHintAntTask extends MatchingTask {
 		return props;
 	}
 
-	private void reportResults(int numFiles, int numErrors, String errorLog) {
+	private void reportResults(JsHintReport report) {
 
-		if (reportFile != null) {
+		for (ReportType reportType : reports) {
 
-			StringBuilder report = new StringBuilder();
+			JsHintReporter reporter = null;
 
-			report.append("JSHint validation summary\n");
-			report.append("----------------------------------------------------------------------\n");
-
-			if (numErrors > 0) {
-				report.append(errorLog);
+			// pick a reporter implementation
+			if (reportType.getType().trim().equalsIgnoreCase("plain")) {
+				reporter = new PlainJsHintReporter(report);
+			} else if (reportType.getType().trim().equalsIgnoreCase("xml")) {
+				// default to plain reporter
+				reporter = new XmlJsHintReporter(report);
 			}
-			report.append("----------------------------------------------------------------------\n");
-			if (numErrors > 0) {
-				report.append(getFailureMessage(numErrors));
+
+			if (reportType.getDestFile() == null) {
+				error("Could not write a report, destFile attribute was not set");
+				continue;
+			}
+
+			if (reporter != null) {
+				try {
+					log("Writing report to " + reportType.getDestFile().getAbsolutePath());
+					File outFile = reportType.getDestFile();
+					Files.createParentDirs(outFile);
+					Files.touch(outFile);
+					Files.write(reporter.createReport(), outFile, Charsets.UTF_8);
+				} catch (IOException e) {
+					error("Could not write report file: " + e.getMessage());
+				}
 			} else {
-				report.append(getSuccessMessage(numFiles));
-			}
-			report.append("\n");
-			report.append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(new Date()));
-
-			try {
-				File outFile = new File(reportFile);
-				Files.createParentDirs(outFile);
-				Files.touch(outFile);
-				Files.write(report.toString(), outFile, Charsets.UTF_8);
-			} catch (IOException e) {
-				log("Could not write report file: " + e.getMessage());
+				error("Cannot write report. [" + reportType.getType() + "] is not a valid report type.");
 			}
 		}
 	}
@@ -170,17 +184,6 @@ public class JsHintAntTask extends MatchingTask {
 		if (message != null) {
 			throw new BuildException(message);
 		}
-	}
-
-	protected static String getFailureMessage(int numErrors) {
-		String plural = numErrors > 1 ? "s" : "";
-		String message = "JSHint found " + numErrors + " error" + plural + ".";
-		return message;
-	}
-
-	protected static String getSuccessMessage(int numFiles) {
-		String message = numFiles + "  JS files passed JSHint code checks";
-		return message;
 	}
 
 	/**
@@ -227,15 +230,6 @@ public class JsHintAntTask extends MatchingTask {
 	}
 
 	/**
-	 * Output jshint results to a file
-	 * 
-	 * @param reportFile
-	 */
-	public void setReportFile(String reportFile) {
-		this.reportFile = reportFile;
-	}
-
-	/**
 	 * The JSHint ant task is packaged with an embedded copy of jshint. But a
 	 * user can specify there another copy of jshint using this attribute
 	 * 
@@ -244,5 +238,12 @@ public class JsHintAntTask extends MatchingTask {
 	 */
 	public void setJshintSrc(String jshintSrc) {
 		this.jshintSrc = jshintSrc;
+	}
+
+	/**
+	 * Ant error logging
+	 */
+	public void error(String msg) {
+		log(msg, LogLevel.ERR.getLevel());
 	}
 }
