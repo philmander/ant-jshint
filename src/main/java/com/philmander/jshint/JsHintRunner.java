@@ -178,6 +178,11 @@ public class JsHintRunner {
 			JsHintResult result = new JsHintResult(file);
 
 			JSSourceFile jsFile = JSSourceFile.fromFile(file);
+			
+			if(jsFile.getCode().trim().length() == 0) {
+				logger.error(jsFile.getName() + " is empty. Linting will be skipped");
+				continue;
+			}
 
 			// set current file on scope
 			global.put("currentFile", global, jsFile.getName());
