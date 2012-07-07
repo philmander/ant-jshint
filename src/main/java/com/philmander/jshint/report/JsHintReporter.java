@@ -2,7 +2,7 @@ package com.philmander.jshint.report;
 
 /**
  * A JsHint reporting file
- * @author philip
+ * @author Phil Mander
  *
  */
 public interface JsHintReporter {

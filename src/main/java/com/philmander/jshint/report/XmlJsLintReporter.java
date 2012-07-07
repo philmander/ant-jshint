@@ -7,11 +7,11 @@ import com.philmander.jshint.JsHintReport;
  * @author Phil Mander
  *
  */
-public class XmlJsHintReporter extends XmlReporter {
+public class XmlJsLintReporter extends XmlReporter {
 
-	public XmlJsHintReporter(JsHintReport report) {
+	public XmlJsLintReporter(JsHintReport report) {
 
-		super(report, "jshint");
+		super(report, "jslint");
 
 	}
 }

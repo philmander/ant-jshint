@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="../jslint/jslint.js"></script>
+		<script src="../jshint/jshint-latest.js"></script>
+		
+		<script>
+			
+			var js = "(function() {\nalert(\"hello\")\n})";
+			console.log(js);
+			
+			//JSHINT(js, {});
+			//console.log(JSHINT.data());
+			//console.log(JSHINT);
+			//var report = JSHINT.report();
+			//console.log(report);
+			
+			var res = JSLINT(js, {});
+			console.log(JSLINT.report(JSLINT.data()));
+			
+		
+		</script>
+	</head>
+	<body></body>
+</html>

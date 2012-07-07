@@ -66,8 +66,10 @@ public class JsHintAntTaskTest extends BuildFileTest
     	
     	File reportPlain = new File("target/temp/jshint-report.txt");
     	File reportXml = new File("target/temp/jshint-report.xml");
+    	File reportJsLintXml = new File("target/temp/jslint-report.xml");
     	assertFalse(reportPlain.exists());
     	assertFalse(reportXml.exists());
+    	assertFalse(reportJsLintXml.exists());
     	try {
     		executeTarget("testReportFile");	
     	} catch(BuildException e) {
@@ -77,6 +79,10 @@ public class JsHintAntTaskTest extends BuildFileTest
     	assertTrue("Plain report file is empty", reportPlain.length() > 0);
     	
     	assertTrue("XML report does not exist", reportXml.exists());
-    	assertTrue("XML report file is empty", reportXml.length() > 0);   
+    	assertTrue("XML report file is empty", reportXml.length() > 0);
+    	
+    	assertTrue("XML JsLint report does not exist", reportJsLintXml.exists());
+    	assertTrue("XML JsLint report file is empty", reportJsLintXml.length() > 0);   
+
     }
 }

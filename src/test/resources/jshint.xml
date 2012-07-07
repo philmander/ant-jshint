@@ -66,6 +66,7 @@
 		<jshint dir="${test.resources.dir}/js" fail="false">
 			<report type="plain" destFile="${temp.dir}/jshint-report.txt"/>
 			<report type="xml" destFile="${temp.dir}/jshint-report.xml"/>
+			<report type="jslint-xml" destFile="${temp.dir}/jslint-report.xml"/>
 			<include name="**/*.js" />
 		</jshint>
 

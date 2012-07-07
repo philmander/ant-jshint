@@ -18,6 +18,7 @@ import com.google.common.io.Files;
 import com.philmander.jshint.report.JsHintReporter;
 import com.philmander.jshint.report.PlainJsHintReporter;
 import com.philmander.jshint.report.XmlJsHintReporter;
+import com.philmander.jshint.report.XmlJsLintReporter;
 
 /**
  * Ant task to validate a set of files using JSHint
@@ -27,6 +28,12 @@ import com.philmander.jshint.report.XmlJsHintReporter;
  */
 public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 
+	protected final String PLAIN_REPORT = "plain";
+	
+	protected final String XML_REPORT = "xml"; 
+	
+	protected final String JSLINT_XML_REPORT = "jslint-xml"; 
+	
 	private File dir;
 
 	private boolean fail = true;
@@ -143,11 +150,13 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			JsHintReporter reporter = null;
 
 			// pick a reporter implementation
-			if (reportType.getType().trim().equalsIgnoreCase("plain")) {
+			if (reportType.getType().trim().equalsIgnoreCase(PLAIN_REPORT)) {
 				reporter = new PlainJsHintReporter(report);
-			} else if (reportType.getType().trim().equalsIgnoreCase("xml")) {
+			} else if (reportType.getType().trim().equalsIgnoreCase(XML_REPORT)) {
 				// default to plain reporter
 				reporter = new XmlJsHintReporter(report);
+			} else if(reportType.getType().trim().equalsIgnoreCase(JSLINT_XML_REPORT)) {
+				reporter = new XmlJsLintReporter(report);
 			}
 
 			if (reportType.getDestFile() == null) {
