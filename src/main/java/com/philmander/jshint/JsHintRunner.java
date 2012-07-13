@@ -22,12 +22,16 @@ import org.mozilla.javascript.ScriptableObject;
 import com.google.javascript.jscomp.JSSourceFile;
 import com.philmander.jshint.report.PlainJsHintReporter;
 
-/**
+/**`
  * Standalone class for running jshint
  * 
  * @author Phil Mander
  */
 public class JsHintRunner {
+	
+	private static final String JSHINT_LOC = "/com/philmander/jshint/jshint.js";
+	
+	private static final String JSHINT_RUNNER_LOC = "/com/philmander/jshint/jshint-runner.js";
 
 	private JsHintLogger logger = null;
 
@@ -147,17 +151,14 @@ public class JsHintRunner {
 		global.defineFunctionProperties(names, JsHintRunner.class, ScriptableObject.DONTENUM);
 
 		// get js hint
-		String jsHintFileName = "/jshint.js";
-
 		// get js hint source from classpath or user file
 		InputStream jsHintIn = jshintSrc != null ? new FileInputStream(new File(jshintSrc)) : this.getClass()
-				.getResourceAsStream(jsHintFileName);
+				.getResourceAsStream(JSHINT_LOC);
+		JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(JSHINT_LOC, jsHintIn);
 
-		JSSourceFile jsHintSrc = JSSourceFile.fromInputStream(jsHintFileName, jsHintIn);
-
-		String runJsHintFile = "/jshint-runner.js";
-		InputStream runJsHintIn = this.getClass().getResourceAsStream(runJsHintFile);
-		JSSourceFile runJsHint = JSSourceFile.fromInputStream(runJsHintFile, runJsHintIn);
+		//get jshint runner js
+		InputStream runJsHintIn = this.getClass().getResourceAsStream(JSHINT_RUNNER_LOC);
+		JSSourceFile runJsHint = JSSourceFile.fromInputStream(JSHINT_RUNNER_LOC, runJsHintIn);
 
 		// load jshint
 		ctx.evaluateReader(global, jsHintSrc.getCodeReader(), jsHintSrc.getName(), 0, null);
