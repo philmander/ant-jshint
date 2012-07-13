@@ -7,7 +7,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
 import org.junit.Test;
 
-import com.philmander.jshint.JsHintAntTask;
 import com.philmander.jshint.report.PlainJsHintReporter;
 
 /**
@@ -28,7 +27,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     	try {
     		executeTarget("testIncludes");	
     	} catch(BuildException e) {
-    		int expectedErrors = 8;
+    		int expectedErrors = 22;
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
     }
@@ -42,12 +41,13 @@ public class JsHintAntTaskTest extends BuildFileTest
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
+    
 	@Test
 	public void testTask_optionsFile() throws IOException {
     	try {
     		executeTarget("testOptionsFile");	
     	} catch(BuildException e) {
-    		int expectedErrors = 4;
+    		int expectedErrors = 3;
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
@@ -58,6 +58,26 @@ public class JsHintAntTaskTest extends BuildFileTest
     		executeTarget("testCustomHintFile");	
     	} catch(BuildException e) {
     		fail("This test should not find any errors\n" + e.getMessage());
+    	}
+	}
+	
+	@Test
+	public void testTask_globals() throws IOException {	
+    	try {
+    		executeTarget("testGlobals");	
+    	} catch(BuildException e) {
+    		int expectedErrors = 2;
+    		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
+    	}
+	}
+	
+	@Test
+	public void testTask_globalsFile() throws IOException {	
+    	try {
+    		executeTarget("testGlobalsFile");	
+    	} catch(BuildException e) {
+    		int expectedErrors = 2;
+    		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
 	

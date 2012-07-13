@@ -39,6 +39,10 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	private boolean fail = true;
 
 	private String jshintSrc = null;
+	
+	private String globals = null;
+	
+	private String globalsFile = null;
 
 	private String optionsFile = null;
 
@@ -76,7 +80,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 				for (int i = 0; i < files.length; i++) {
 					absFiles[i] = dir + System.getProperty("file.separator") + files[i];
 				}
-				JsHintReport report = runner.lint(absFiles, loadOptions());
+				JsHintReport report = runner.lint(absFiles, loadOptions(), loadGlobals());
 
 				//TODO: move reporting to runner so it works for CLI too
 				reportResults(report);
@@ -100,19 +104,32 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 		} else {
 			log("0 JS files found");
 		}
-
 	}
-
+	
 	private Properties loadOptions() {
+		Properties props = loadProperties(options, optionsFile);
+		logProperties("custom options", props);
+
+		return props;
+	}
+	
+	private Properties loadGlobals() {
+		Properties props = loadProperties(globals, globalsFile);
+		logProperties("custom options", props);
+
+		return props;
+	}
+	
+	private Properties loadProperties(String propertiesList, String propertiesFilePath) {
 		Properties props = new Properties();
-		if (optionsFile != null) {
+		if (propertiesFilePath != null) {
 			try {
-				File optionsFile = new File(this.optionsFile);
-				if (optionsFile.exists()) {
-					FileInputStream inStream = new FileInputStream(optionsFile);
+				File propertiesFile = new File(propertiesFilePath);
+				if (propertiesFile.exists()) {
+					FileInputStream inStream = new FileInputStream(propertiesFile);
 					props.load(inStream);
 				} else {
-					throw new FileNotFoundException("Could not find options file at " + optionsFile.getAbsolutePath());
+					throw new FileNotFoundException("Could not find properties file at " + propertiesFile.getAbsolutePath());
 				}
 			} catch (FileNotFoundException e) {
 				log(e.getMessage());
@@ -121,26 +138,28 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			}
 		}
 
-		if (options != null) {
-			String[] optionsList = options.split(",");
+		if (propertiesList != null) {
+			String[] optionsList = propertiesList.split(",");
 			for (String option : optionsList) {
-				String[] optionPair = option.trim().split("=");
+				String[] optionPair = option.trim().split("[=:]");
 				props.put(optionPair[0].trim(), optionPair[1].trim());
 			}
 		}
 
+		return props;
+	}
+	
+	private void logProperties(String attrName, Properties props) {
 		// log combined properties
-		StringBuilder opts = new StringBuilder();
-		for (Object optName : props.keySet()) {
-			boolean val = Boolean.valueOf(props.getProperty((String) optName));
-			opts.append(optName + "=" + val + ",");
+		StringBuilder propsBuilder = new StringBuilder();
+		for (Object propName : props.keySet()) {
+			boolean val = Boolean.valueOf(props.getProperty((String) propName));
+			propsBuilder.append(propName + "=" + val + ",");
 		}
 		if (props.size() > 0) {
-			opts.deleteCharAt(opts.length() - 1);
+			propsBuilder.deleteCharAt(propsBuilder.length() - 1);
 		}
-		log("Using options: " + opts);
-
-		return props;
+		log("Using " + attrName + ":" + propsBuilder);
 	}
 
 	private void reportResults(JsHintReport report) {
@@ -247,6 +266,26 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 */
 	public void setJshintSrc(String jshintSrc) {
 		this.jshintSrc = jshintSrc;
+	}
+	
+	
+	/**
+	 * A comma separated list of global variables to use when linting all files
+	 * @param globals
+	 */
+	public void setGlobals(String globals) {
+		this.globals = globals;
+	}
+	
+	/**
+	 * Specify jshint globals in a properties file and point to the file using
+	 * the options attribute
+	 * 
+	 * @param options
+	 *            Location of the global properties file
+	 */
+	public void setGlobalsFile(String globalsFile) {
+		this.globalsFile = globalsFile;
 	}
 
 	/**

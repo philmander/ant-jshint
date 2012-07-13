@@ -7,7 +7,7 @@
 	<!-- Use this prop if testing with maven -->
 	<property name="test.resources.dir" value="${basedir}/src/test/resources" />
 
-	<!-- Use this prop if testing in ide -->
+	<!-- Use this prop if testing in ide (via unit test) -->
 	<!--<property name="test.resources.dir" value="${basedir}" />-->
 	
 	<property name="temp.dir" value="${basedir}/target/temp" />
@@ -39,7 +39,7 @@
 
 	<target name="testOptions" depends="makeTask">
 
-		<jshint dir="${test.resources.dir}/js" options="forin=true,curly=true">
+		<jshint dir="${test.resources.dir}/js" options="forin:true,curly:false,evil:true">
 			<include name="test-options.js" />
 		</jshint>
 
@@ -57,6 +57,22 @@
 
 		<jshint dir="${test.resources.dir}/js" jshintSrc="${test.resources.dir}/my-jshint.js">
 			<include name="test-optionsfile.js" />
+		</jshint>
+
+	</target>
+	
+	<target name="testGlobals" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js" globals="globalOne:true, globalThree: true">
+			<include name="test-globals.js"/>
+		</jshint>
+
+	</target>
+	
+	<target name="testGlobalsFile" depends="makeTask">
+
+		<jshint dir="${test.resources.dir}/js" globalsFile="${test.resources.dir}/jshint-globals.properties">
+			<include name="test-globals-file.js" />
 		</jshint>
 
 	</target>

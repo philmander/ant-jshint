@@ -15,6 +15,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -24,7 +25,7 @@ import com.philmander.jshint.report.PlainJsHintReporter;
 /**
  * Standalone class for running jshint
  * 
- * @author Phil Mander 
+ * @author Phil Mander
  */
 public class JsHintRunner {
 
@@ -34,6 +35,7 @@ public class JsHintRunner {
 
 	/**
 	 * Basic, intital CLI implementation
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -41,7 +43,7 @@ public class JsHintRunner {
 		/*
 		 * TODO: options and reporting
 		 */
-		
+
 		File currentDir = new File(".");
 
 		CommandLineParser parser = new PosixParser();
@@ -79,9 +81,11 @@ public class JsHintRunner {
 			}
 
 			logger.log("Running JSHint on " + files.size() + " files");
-			JsHintReport report = runner.lint(files.toArray(new String[files.size()]), new Properties());
-			
-			if(report.getTotalErrors() > 0) {
+			Properties optionsProps = new Properties();
+			Properties globalsProps = new Properties();
+			JsHintReport report = runner.lint(files.toArray(new String[files.size()]), optionsProps, globalsProps);
+
+			if (report.getTotalErrors() > 0) {
 				logger.log(PlainJsHintReporter.getFailureMessage(report.getTotalErrors()));
 			} else {
 				logger.log(PlainJsHintReporter.getSuccessMessage(report.getNumFiles()));
@@ -123,19 +127,24 @@ public class JsHintRunner {
 	/**
 	 * Run JSHint over a list of one or more files
 	 * 
-	 * @param files A list of absolute files
-	 * @param options A map of jshint options to apply
+	 * @param files
+	 *            A list of absolute files
+	 * @param options
+	 *            A map of jshint options to apply
 	 * @return A JSHintReport object containing the full results data
 	 * @throws IOException
 	 */
-	public JsHintReport lint(String[] files, Properties options) throws IOException {
+	public JsHintReport lint(String[] files, Properties options, Properties undefs) throws IOException {
 
 		JsHintReport report = new JsHintReport(files.length);
-		
+
 		// start rhino
 		Context ctx = Context.enter();
 		ctx.setLanguageVersion(Context.VERSION_1_5);
 		ScriptableObject global = ctx.initStandardObjects();
+
+		String[] names = { "print" };
+		global.defineFunctionProperties(names, JsHintRunner.class, ScriptableObject.DONTENUM);
 
 		// get js hint
 		String jsHintFileName = "/jshint.js";
@@ -159,34 +168,41 @@ public class JsHintRunner {
 
 		// jshint options
 		ScriptableObject jsHintOpts = (ScriptableObject) ctx.newObject(global);
-		jsHintOpts.defineProperty("rhino", true, ScriptableObject.DONTENUM);
-
-		// user options
+		
 		for (Object key : options.keySet()) {
-			boolean optionValue = Boolean.valueOf((String) options.get(key));
-			jsHintOpts.defineProperty((String) key, optionValue, ScriptableObject.DONTENUM);
+			boolean optionValue = Boolean.valueOf((String) options.get(key));			
+			jsHintOpts.put((String) key, jsHintOpts, optionValue);
 		}
-
 		global.defineProperty("jsHintOpts", jsHintOpts, ScriptableObject.DONTENUM);
+
+		// jshint globals
+		ScriptableObject jsHintGlobals = (ScriptableObject) ctx.newObject(global);
+		for (Object key : undefs.keySet()) {
+			boolean globalValue = Boolean.valueOf((String) undefs.get(key));			
+			jsHintGlobals.put((String) key, jsHintGlobals, globalValue);
+		}
+		global.defineProperty("jsHintGlobals", jsHintGlobals, ScriptableObject.DONTENUM);
 
 		// define object to store errors
 		global.defineProperty("errors", ctx.newArray(global, 0), ScriptableObject.DONTENUM);
 
 		// validate each file
 		for (String file : files) {
-			
+
 			JsHintResult result = new JsHintResult(file);
 
 			JSSourceFile jsFile = JSSourceFile.fromFile(file);
-			
-			if(jsFile.getCode().trim().length() == 0) {
-				logger.error(jsFile.getName() + " is empty. Linting will be skipped");
+
+			String jsFileName = jsFile.getName();
+			String jsFileCode = jsFile.getCode();
+			if (jsFileCode.trim().length() == 0) {
+				logger.error(jsFileName + " is empty. Linting will be skipped");
 				continue;
 			}
 
 			// set current file on scope
-			global.put("currentFile", global, jsFile.getName());
-			global.put("currentCode", global, jsFile.getCode());
+			global.put("currentFile", global, jsFileName);
+			global.put("currentCode", global, jsFileCode);
 			global.put("errors", global, ctx.newArray(global, 0));
 
 			ctx.evaluateReader(global, runJsHint.getCodeReader(), runJsHint.getName(), 0, null);
@@ -196,7 +212,7 @@ public class JsHintRunner {
 			int numErrors = ((Number) errors.get("length", global)).intValue();
 
 			if (numErrors > 0) {
-				if(logger != null) {
+				if (logger != null) {
 					logger.log(PlainJsHintReporter.getFileFailureMessage(jsHintFileName));
 				}
 			}
@@ -211,16 +227,16 @@ public class JsHintRunner {
 					int character = ((Number) errorDetail.get("character", global)).intValue();
 					String evidence = ((String) errorDetail.get("evidence", global)).replace(
 							"^\\s*(\\S*(\\s+\\S+)*)\\s*$", "$1");
-					
+
 					JsHintError hintError = new JsHintError(reason, evidence, line, character);
 					result.addError(hintError);
-					
-					if(logger != null) {
+
+					if (logger != null) {
 						logger.log(PlainJsHintReporter.getIssueMessage(reason, evidence, line, character));
 					}
 				} catch (ClassCastException e) {
-					
-					if(logger != null) {
+
+					if (logger != null) {
 						// TODO: See issue #1. Why is this happening?
 						logger.error(("Problem casting JShint error variable for previous error. See issue (#1) ("
 								+ e.getMessage() + ")"));
@@ -231,11 +247,24 @@ public class JsHintRunner {
 			}
 			report.addResult(result);
 		}
-		
+
 		return report;
 	}
 
 	public void setLogger(JsHintLogger logger) {
 		this.logger = logger;
+	}
+
+	public static void print(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
+		for (int i = 0; i < args.length; i++) {
+			if (i > 0)
+				System.out.print(" ");
+
+			// Convert the arbitrary JavaScript value into a string form.
+			String s = Context.toString(args[i]);
+
+			System.out.print(s);
+		}
+		System.out.println();
 	}
 }
