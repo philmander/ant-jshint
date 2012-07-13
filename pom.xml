@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.philmander.jshint</groupId>
 	<artifactId>ant-jshint</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2-SNAPSHOT</version>
 	<name>ant-jshint</name>
 	<packaging>jar</packaging>
 	<description>Ant task for jshint</description>
