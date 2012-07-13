@@ -7,7 +7,7 @@ To get started download the ant-jshint jar file and include the following code i
 ```xml
 <!-- Define the task -->
 <taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask" 
-    classpath="${basedir}/jshint/ant-jshint-0.2-deps.jar" />
+    classpath="${basedir}/jshint/ant-jshint-0.3-deps.jar" />
 
 <target name="runJsHint">
   
@@ -19,16 +19,29 @@ To get started download the ant-jshint jar file and include the following code i
 
 ##Parameters
 
+###Task attributes
+
 Attribute   | Description | Required
 ----------- | ----------- | ------------------
 dir         | The directory to scan for files to validate | yes
-options     | A comma separated list of jshint options. E.g. evil=true,forin=true | no
+options     | A comma separated list of jshint options. E.g. `evil: true, forin: true` | no
 optionsFile | A java properties file containing a list of jshint options. You may prefer this for managing a larger amount of options. The options parameter will override options specified in the options file | no
-reportFile  | A file to write a report of jshint results to | no
+globals     | A comma separated list of jshint globals. E.g. `jQuery: true, myApp: true` | no
+globalsFile | A java properties file containing a list of jshint globals. You may prefer this for managing a larger amount of globals. The globals parameter will override options specified in the globals file | no
 fail        | Instructs the task to fail the build if any jshint errors are found | no (defaults to true)
 jshintSrc   | The task is packaged with jshint embedded, but an alternative jshint src file can be specified here | no
 
 The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.html for more parameters used for file matching or see the usage examples below.
+
+###Nested elements
+
+####report
+
+Attribute    | Description | Required
+------------ | ----------- | ------------------
+type         | The type of report. Available values are `plain`, `xml` and `jslint-xml` (for compatibility with the JSLint plugins) | no (defaults to 'plain')
+destFile     | The file to write the report to | yes
+
 
 ##Usage examples
 
@@ -65,14 +78,23 @@ Lint all JS except minimized source files
     forin=true
     devel=false
 
-
-###Use for reporting purposes
-The task will not fail upon jshint errors and will write results to a text file:
+###Specifying global variables
 
 ```xml
-<jshint dir="${basedir}/src/js" fail="false" reportFile="${basedir}/jshint/results.txt">
+<jshint dir="${basedir}/src/js" globals="$:true">
+    <include name="**/*.js"/>
+    <exclude name="**/*.min.js"/>
+</jshint>
+```
+
+###Use for reporting purposes
+The task will not fail upon jshint errors and will write results to a file in xml format:
+
+```xml
+<jshint dir="${basedir}/src/js" fail="false">
 	<include name="**/*.js"/>
 	<exclude name="**/*.min.js"/>
+	<report type="xml" destFile="${basedir}/jshint/results.xml" />
 </jshint>
 ```
 
@@ -85,7 +107,7 @@ project and running
 
 or downloading the jar release and running
 
-`mvn install:install-file -Dfile=/path/to/ant-jshint-0.2.deps.jar -DgroupId=com.philmander.jshint -DartifactId=ant-jshint -Dversion=0.2 -Dpackaging=jar`
+`mvn install:install-file -Dfile=/path/to/ant-jshint-0.2.deps.jar -DgroupId=com.philmander.jshint -DartifactId=ant-jshint -Dversion=0.3 -Dpackaging=jar`
 
 Now use the antrun plugin to add jshint to your Maven build
 
@@ -118,7 +140,7 @@ Now use the antrun plugin to add jshint to your Maven build
 		<dependency>
 			<groupId>com.philmander.jshint</groupId>
 			<artifactId>ant-jshint</artifactId>
-			<version>0.2</version>
+			<version>0.3</version>
 		</dependency>
 	</dependencies>
 </plugin>
