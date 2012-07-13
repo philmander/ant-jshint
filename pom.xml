@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.philmander.jshint</groupId>
 	<artifactId>ant-jshint</artifactId>
-	<version>0.3b</version>
+	<version>0.3-SNAPSHOT</version>
 	<name>ant-jshint</name>
 	<packaging>jar</packaging>
 	<description>Ant task for jshint</description>
@@ -17,8 +17,10 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
+	
 	<scm>
+		<connection>scm:git:git@github.com:philmander/ant-jshint.git</connection>
+		<developerConnection>scm:git:git@github.com:philmander/ant-jshint.git</developerConnection>
 		<url>https://github.com/philmander/ant-jshint</url>
 	</scm>
 	
@@ -109,6 +111,17 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.2.2</version>
+				<configuration>
+					<releaseProfiles>release</releaseProfiles>
+					<goals>package</goals>
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 		<pluginManagement>
