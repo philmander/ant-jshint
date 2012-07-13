@@ -23,6 +23,14 @@
 		<url>https://github.com/philmander/ant-jshint</url>
 	</scm>
 	
+	<developers>
+		<developer>
+			<name>Phil Mander</name>
+			<email>philip.mander@gmail.com</email>
+			<timezone>CET</timezone>
+		</developer>
+	</developers>
+	
 	<dependencies>
 
 		<dependency>
