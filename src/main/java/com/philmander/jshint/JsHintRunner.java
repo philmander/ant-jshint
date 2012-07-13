@@ -213,7 +213,7 @@ public class JsHintRunner {
 
 			if (numErrors > 0) {
 				if (logger != null) {
-					logger.log(PlainJsHintReporter.getFileFailureMessage(jsHintFileName));
+					logger.log(PlainJsHintReporter.getFileFailureMessage(jsFileName));
 				}
 			}
 			for (int i = 0; i < numErrors; i++) {
