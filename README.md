@@ -2,7 +2,7 @@
 
 Easily automate JSHint (http://www.jshint.com/) validation on your Javascript code base with Apache Ant.
 
-To get started download the ant-jshint jar file and include the following code in your Ant build file.
+To get started [download](https://github.com/philmander/ant-jshint/downloads) the ant-jshint jar file and include the following code in your Ant build file.
 
 ```xml
 <!-- Define the task -->
