@@ -171,7 +171,10 @@ public class JsHintRunner {
 		ScriptableObject jsHintOpts = (ScriptableObject) ctx.newObject(global);
 		
 		for (Object key : options.keySet()) {
-			Object optionValue = parseOption((String) options.get(key));
+			Object optionValue = options.get(key);
+			if(optionValue instanceof String) {
+				optionValue = parseOption((String)options.get(key));
+			}			
 			jsHintOpts.put((String) key, jsHintOpts, optionValue);
 		}
 		global.defineProperty("jsHintOpts", jsHintOpts, ScriptableObject.DONTENUM);

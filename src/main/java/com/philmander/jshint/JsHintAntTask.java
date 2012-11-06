@@ -6,12 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.LogLevel;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -122,12 +124,22 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	
 	private Properties loadProperties(String propertiesList, String propertiesFilePath) {
 		Properties props = new Properties();
-		if (propertiesFilePath != null) {
+				
+		if (propertiesFilePath != null) {			
+							
+			//default to properties format
 			try {
 				File propertiesFile = new File(propertiesFilePath);
 				if (propertiesFile.exists()) {
-					FileInputStream inStream = new FileInputStream(propertiesFile);
-					props.load(inStream);
+					if(propertiesFilePath.endsWith(".json")) {
+						ObjectMapper mapper = new ObjectMapper();
+						@SuppressWarnings("unchecked")
+						Map<String, String> jsonProps = mapper.readValue(propertiesFile, Map.class);
+						props.putAll(jsonProps);
+					} else {							
+						FileInputStream inStream = new FileInputStream(propertiesFile);
+						props.load(inStream);
+					}
 				} else {
 					throw new FileNotFoundException("Could not find properties file at " + propertiesFile.getAbsolutePath());
 				}
@@ -137,7 +149,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 				log("Could not load properties file");
 			}
 		}
-
+	
 		if (propertiesList != null) {
 			String[] optionsList = propertiesList.split(",");
 			for (String option : optionsList) {

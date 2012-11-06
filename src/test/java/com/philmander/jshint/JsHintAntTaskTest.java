@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.philmander.jshint.report.PlainJsHintReporter;
@@ -16,18 +17,16 @@ import com.philmander.jshint.report.PlainJsHintReporter;
 public class JsHintAntTaskTest extends BuildFileTest
 {
     @Override
-    protected void setUp() throws Exception
-    {
+    protected void setUp() throws Exception {
         configureProject("src/test/resources/jshint.xml");
     }
 
     @Test
-    public void testTask_includes() throws IOException
-    {
+    public void testTask_includes() throws IOException {
     	try {
     		executeTarget("testIncludes");	
     	} catch(BuildException e) {
-    		int expectedErrors = 22;
+    		int expectedErrors = 28;
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
     }
@@ -46,6 +45,16 @@ public class JsHintAntTaskTest extends BuildFileTest
 	public void testTask_optionsFile() throws IOException {
     	try {
     		executeTarget("testOptionsFile");	
+    	} catch(BuildException e) {
+    		int expectedErrors = 4;
+    		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
+    	}
+	}
+	
+	@Test	
+	public void testTask_optionsJsonFile() throws IOException {
+    	try {
+    		executeTarget("testOptionsJsonFile");	
     	} catch(BuildException e) {
     		int expectedErrors = 4;
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());

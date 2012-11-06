@@ -24,8 +24,8 @@ To get started download the ant-jshint jar file and include the following code i
 Attribute   | Description | Required
 ----------- | ----------- | ------------------
 dir         | The directory to scan for files to validate | yes
-options     | A comma separated list of jshint options. E.g. `evil: true, forin: true` | no
-optionsFile | A java properties file containing a list of jshint options. You may prefer this for managing a larger amount of options. The options parameter will override options specified in the options file | no
+options     | A comma separated list of jshint options. E.g. `evil: true, maxlen: 100` | no
+optionsFile | A java properties file containing a list of jshint options (Files with a '.json' extension will be interpreted as JSON). You may prefer this for managing a larger amount of options. The options parameter will override options specified in the options file | no
 globals     | A comma separated list of jshint globals. E.g. `jQuery: true, myApp: true` | no
 globalsFile | A java properties file containing a list of jshint globals. You may prefer this for managing a larger amount of globals. The globals parameter will override options specified in the globals file | no
 fail        | Instructs the task to fail the build if any jshint errors are found | no (defaults to true)
