@@ -105,7 +105,7 @@ public class JsHintRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	} 
 
 	/**
 	 * Create new instance with default embedded jshint src version
@@ -171,7 +171,7 @@ public class JsHintRunner {
 		ScriptableObject jsHintOpts = (ScriptableObject) ctx.newObject(global);
 		
 		for (Object key : options.keySet()) {
-			boolean optionValue = Boolean.valueOf((String) options.get(key));			
+			Object optionValue = parseOption((String) options.get(key));
 			jsHintOpts.put((String) key, jsHintOpts, optionValue);
 		}
 		global.defineProperty("jsHintOpts", jsHintOpts, ScriptableObject.DONTENUM);
@@ -250,6 +250,22 @@ public class JsHintRunner {
 		}
 
 		return report;
+	}
+	
+	public static Object parseOption(String option) {
+		
+		try {
+			Number numberVal = Double.parseDouble(option);	
+			return numberVal;
+		} catch(NumberFormatException e) {			
+		}
+		
+		if(option.equalsIgnoreCase("false") || option.equalsIgnoreCase("true")) {
+			boolean boolVal = Boolean.parseBoolean(option);
+			return boolVal;
+		}
+		
+		return option;		
 	}
 
 	public void setLogger(JsHintLogger logger) {

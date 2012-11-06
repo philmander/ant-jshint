@@ -47,7 +47,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     	try {
     		executeTarget("testOptionsFile");	
     	} catch(BuildException e) {
-    		int expectedErrors = 3;
+    		int expectedErrors = 4;
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
