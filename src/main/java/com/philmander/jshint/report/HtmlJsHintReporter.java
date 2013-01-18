@@ -10,7 +10,7 @@ import com.philmander.jshint.JsHintResult;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
- * TODO : Javadoc for
+ * An implementation of the {@link JsHintReporter} interface that creates a HTML report similar to checkstyle or PMD.
  *
  * @author Nahuel Barrios <barrios.nahuel@gmail.com>.
  */
@@ -22,9 +22,10 @@ public class HtmlJsHintReporter implements JsHintReporter {
     private final JsHintReport jsHintReport;
 
     /**
-     * TODO : Javadoc for Creates a HtmlJsHintReporter with a specific JsHintReport.
+     * Creates a HtmlJsHintReporter for a specific {@link JsHintReport}.
      *
      * @param jsHintReport
+     *         The data used to generate the HTML. It musn't be {@code null}.
      */
     public HtmlJsHintReporter(JsHintReport jsHintReport) {
         this.jsHintReport = jsHintReport;
@@ -73,10 +74,21 @@ public class HtmlJsHintReporter implements JsHintReporter {
         return pageHeader + errors.toString() + tableFooter;
     }
 
+    /**
+     * @see #td(String)
+     */
     private String td(int line) {
         return td(String.valueOf(line));
     }
 
+    /**
+     * Creates a {@code td} HTML tag with the specified {@code aValue}.
+     *
+     * @param aValue
+     *         The inner value for this {@code td} tag.
+     *
+     * @return A {@code td} HTML tag.
+     */
     private String td(String aValue) {
         return "<td>" + StringEscapeUtils.escapeXml(aValue) + "</td>";
     }
