@@ -37,40 +37,46 @@ public class HtmlJsHintReporter implements JsHintReporter {
             throw new IllegalArgumentException("A JsHintReport is required to successfuly build a HTML report.");
         }
 
-        String pageHeader = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
+        String detailsSectionStart = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
 
 
         StringBuilder errors = new StringBuilder();
         for (JsHintResult eachResult : jsHintReport.getResults()) {
 
-            errors.append("<div class=\"section\"><h3>" + eachResult.getFile() + "</h3>");
+            if (eachResult.getNumErrors() > 0) {
+                errors.append("<div class=\"section\"><h3>").append(eachResult.getFile()).append("</h3>");
 
 
-            errors.append("<table border=\"0\" class=\"bodyTable\">" +
-                                  "<tr class=\"a\">" +
-                                  "<th>Reason</th>" +
-                                  "<th>Evidence</th>" +
-                                  "<th>Line</th>" +
-                                  "</tr>");
+                errors.append("<table border=\"0\" class=\"bodyTable\">" +
+                                      "<tr class=\"a\">" +
+                                      "<th>Reason</th>" +
+                                      "<th>Evidence</th>" +
+                                      "<th>Line</th>" +
+                                      "</tr>");
 
-            for (JsHintError eachError : eachResult.getErrors()) {
+                for (JsHintError eachError : eachResult.getErrors()) {
 
-                errors.append("<tr>");
+                    errors.append("<tr>");
 
-                errors.append(td(eachError.getReason()))
-                        .append(td(eachError.getEvidence()))
-                        .append(td(eachError.getLine()));
+                    errors.append(td(eachError.getReason()))
+                            .append(td(eachError.getEvidence()))
+                            .append(td(eachError.getLine()));
 
-                errors.append("</tr>");
+                    errors.append("</tr>");
+                }
+
+                errors.append("</table></div>");
             }
-
-            errors.append("</table></div>");
         }
 
-        String tableFooter = "</div>";
+        if (errors.length() == 0) {
+            errors.append("<h3>There are no JSHint errors to display.</h3>");
+        }
+
+        String detailsSectiondEnd = "</div>";
 
 
-        return pageHeader + errors.toString() + tableFooter;
+        return detailsSectionStart + errors.toString() + detailsSectiondEnd;
     }
 
     /**
