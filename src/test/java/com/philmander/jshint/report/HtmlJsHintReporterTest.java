@@ -21,7 +21,7 @@ public class HtmlJsHintReporterTest {
      * Test method for createReport.
      */
     @Test
-    public void createReport() {
+    public void createReport_with1FileReadAnd1Error_generatesHTMLReport() {
 
         String pageHeader = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
 
@@ -40,11 +40,11 @@ public class HtmlJsHintReporterTest {
                                  "<td>24</td>" +
                                  "</tr>";
 
-        String fileEnd = "</div>";
+        String fileEnd = "</table></div>";
 
-        String tableFooter = "</table>";
+        String detailsSectionEnd = "</div>";
 
-        String expectedHtml = pageHeader + fileSection + tableHeader + anError + fileEnd + tableFooter;
+        String expectedHtml = pageHeader + fileSection + tableHeader + anError + fileEnd + detailsSectionEnd;
 
         JsHintReport dummyReport = new JsHintReport(1);
         JsHintResult dummyResult = new JsHintResult("a/path/to/a/file/aFile.js");
@@ -55,7 +55,7 @@ public class HtmlJsHintReporterTest {
         String htmlResult = new HtmlJsHintReporter(dummyReport).createReport();
 
         Assert.assertNotNull("The HTML result musn't be null.", htmlResult);
-        Assert.assertEquals(expectedHtml.trim(), htmlResult.trim());
+        Assert.assertEquals(expectedHtml, htmlResult);
     }
 
     /**
@@ -65,6 +65,30 @@ public class HtmlJsHintReporterTest {
     @Test(expected = IllegalArgumentException.class)
     public void createReport_withNullReport_throwsIllegalArgumentException() {
         new HtmlJsHintReporter(null).createReport();
+    }
+
+    /**
+     * Test method for createReport.
+     */
+    @Test
+    public void createReport_with1FileReadAnd0Error_generatesHTMLReportWithNoErrorsDisplayed() {
+
+        String pageHeader = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
+
+        String noErrorsToDisplay = "<h3>There are no JSHint errors to display.</h3>";
+
+        String fileEnd = "</div>";
+
+        String expectedHtml = pageHeader + noErrorsToDisplay + fileEnd;
+
+        JsHintReport dummyReport = new JsHintReport(1);
+        JsHintResult dummyResult = new JsHintResult("a/path/to/a/file/aFile.js");
+        dummyReport.addResult(dummyResult);
+
+        String htmlResult = new HtmlJsHintReporter(dummyReport).createReport();
+
+        Assert.assertNotNull("The HTML result musn't be null.", htmlResult);
+        Assert.assertEquals(expectedHtml, htmlResult);
     }
 
 }

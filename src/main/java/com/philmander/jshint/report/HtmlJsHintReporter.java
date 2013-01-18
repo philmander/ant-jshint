@@ -64,11 +64,10 @@ public class HtmlJsHintReporter implements JsHintReporter {
                 errors.append("</tr>");
             }
 
-            errors.append("</div>");
-
+            errors.append("</table></div>");
         }
 
-        String tableFooter = "</table>";
+        String tableFooter = "</div>";
 
 
         return pageHeader + errors.toString() + tableFooter;
