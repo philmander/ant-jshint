@@ -4,6 +4,8 @@
  */
 package com.philmander.jshint.report;
 
+import java.util.List;
+
 import com.philmander.jshint.JsHintError;
 import com.philmander.jshint.JsHintReport;
 import com.philmander.jshint.JsHintResult;
@@ -51,30 +53,8 @@ public class HtmlJsHintReporter implements JsHintReporter {
 
         StringBuilder errors = new StringBuilder();
         for (JsHintResult eachResult : jsHintReport.getResults()) {
-
             if (eachResult.getNumErrors() > 0) {
-                errors.append("<div class=\"section\"><h3>").append(eachResult.getFile()).append("</h3>");
-
-
-                errors.append("<table border=\"1\">" +
-                                      "<tr class=\"a\">" +
-                                      "<th>Reason</th>" +
-                                      "<th>Evidence</th>" +
-                                      "<th>Line</th>" +
-                                      "</tr>");
-
-                for (JsHintError eachError : eachResult.getErrors()) {
-
-                    errors.append("<tr>");
-
-                    errors.append(td(eachError.getReason()))
-                            .append(td(eachError.getEvidence()))
-                            .append(td(eachError.getLine()));
-
-                    errors.append("</tr>");
-                }
-
-                errors.append("</table></div>");
+                addErrorsFromOneFile(errors, eachResult.getFile(), eachResult.getErrors());
             }
         }
 
@@ -87,6 +67,42 @@ public class HtmlJsHintReporter implements JsHintReporter {
         String pageFooter = "</body></html>";
 
         return pageHeader + detailsSectionStart + errors.toString() + detailsSectiondEnd + pageFooter;
+    }
+
+    /**
+     * Creates the {@code div} section for showing errors from one file. It creates a {@code table} HTML element with the following columns:
+     * Reason, Evidence, Line.
+     *
+     * @param errors
+     *         The StringBuilder where to add the resulting HTML.
+     * @param filePath
+     *         The name and the path of the file.
+     * @param errorsList
+     *         A list of {@link JsHintError} with the errors to add.
+     */
+    private void addErrorsFromOneFile(StringBuilder errors, String filePath, List<JsHintError> errorsList) {
+        errors.append("<div class=\"section\"><h3>").append(filePath).append("</h3>");
+
+
+        errors.append("<table border=\"1\">" +
+                              "<tr class=\"a\">" +
+                              "<th>Reason</th>" +
+                              "<th>Evidence</th>" +
+                              "<th>Line</th>" +
+                              "</tr>");
+
+        for (JsHintError eachError : errorsList) {
+
+            errors.append("<tr>");
+
+            errors.append(td(eachError.getReason()))
+                    .append(td(eachError.getEvidence()))
+                    .append(td(eachError.getLine()));
+
+            errors.append("</tr>");
+        }
+
+        errors.append("</table></div>");
     }
 
     /**
