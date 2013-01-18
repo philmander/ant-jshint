@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.philmander.jshint.report.HtmlJsHintReporter;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
@@ -24,26 +25,31 @@ import com.philmander.jshint.report.XmlJsLintReporter;
 
 /**
  * Ant task to validate a set of files using JSHint
- * 
+ *
  * @author Phil Mander
- * 
+ *
  */
 public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 
 	protected final String PLAIN_REPORT = "plain";
-	
-	protected final String XML_REPORT = "xml"; 
-	
-	protected final String JSLINT_XML_REPORT = "jslint-xml"; 
-	
-	private File dir;
+
+	protected final String XML_REPORT = "xml";
+
+	protected final String JSLINT_XML_REPORT = "jslint-xml";
+
+    /**
+     * Constant to indicate that the final report will be in HTML format using {@link HtmlJsHintReporter} to generate it.
+     */
+    private static final String HTML_REPORT = "html";
+
+    private File dir;
 
 	private boolean fail = true;
 
 	private String jshintSrc = null;
-	
+
 	private String globals = null;
-	
+
 	private String globalsFile = null;
 
 	private String optionsFile = null;
@@ -107,26 +113,26 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			log("0 JS files found");
 		}
 	}
-	
+
 	private Properties loadOptions() {
 		Properties props = loadProperties(options, optionsFile);
 		logProperties("custom options", props);
 
 		return props;
 	}
-	
+
 	private Properties loadGlobals() {
 		Properties props = loadProperties(globals, globalsFile);
 		logProperties("custom options", props);
 
 		return props;
 	}
-	
+
 	private Properties loadProperties(String propertiesList, String propertiesFilePath) {
 		Properties props = new Properties();
-				
-		if (propertiesFilePath != null) {			
-							
+
+		if (propertiesFilePath != null) {
+
 			//default to properties format
 			try {
 				File propertiesFile = new File(propertiesFilePath);
@@ -136,7 +142,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 						@SuppressWarnings("unchecked")
 						Map<String, String> jsonProps = mapper.readValue(propertiesFile, Map.class);
 						props.putAll(jsonProps);
-					} else {							
+					} else {
 						FileInputStream inStream = new FileInputStream(propertiesFile);
 						props.load(inStream);
 					}
@@ -149,7 +155,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 				log("Could not load properties file");
 			}
 		}
-	
+
 		if (propertiesList != null) {
 			String[] optionsList = propertiesList.split(",");
 			for (String option : optionsList) {
@@ -160,7 +166,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 
 		return props;
 	}
-	
+
 	private void logProperties(String attrName, Properties props) {
 		// log combined properties
 		StringBuilder propsBuilder = new StringBuilder();
@@ -181,14 +187,20 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			JsHintReporter reporter = null;
 
 			// pick a reporter implementation
-			if (reportType.getType().trim().equalsIgnoreCase(PLAIN_REPORT)) {
+            String reportTypeKey = reportType.getType().trim();
+
+			if (reportTypeKey.equalsIgnoreCase(PLAIN_REPORT)) {
 				reporter = new PlainJsHintReporter(report);
-			} else if (reportType.getType().trim().equalsIgnoreCase(XML_REPORT)) {
-				// default to plain reporter
+
+			} else if (reportTypeKey.equalsIgnoreCase(XML_REPORT)) {
 				reporter = new XmlJsHintReporter(report);
-			} else if(reportType.getType().trim().equalsIgnoreCase(JSLINT_XML_REPORT)) {
+
+			} else if(reportTypeKey.equalsIgnoreCase(JSLINT_XML_REPORT)) {
 				reporter = new XmlJsLintReporter(report);
-			}
+
+			} else if(reportTypeKey.equalsIgnoreCase(HTML_REPORT)){
+                reporter = new HtmlJsHintReporter(report);
+            }
 
 			if (reportType.getDestFile() == null) {
 				error("Could not write a report, destFile attribute was not set");
@@ -230,7 +242,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * The directory to scan for files to validate. Use includes to only
 	 * validate js files and excludes to omit files such as compressed js
 	 * libraries from js validation
-	 * 
+	 *
 	 * @param dir
 	 */
 	public void setDir(File dir) {
@@ -240,7 +252,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	/**
 	 * By default the ant task will fail the build if jshint finds any errors.
 	 * Set this to false for reporting purposes
-	 * 
+	 *
 	 * @param fail
 	 */
 	public void setFail(boolean fail) {
@@ -250,8 +262,8 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	/**
 	 * Specify jshint options in a properties file and point to the file using
 	 * the options attribute
-	 * 
-	 * @param options
+	 *
+	 * @param optionsFile
 	 *            Location of the options properties file
 	 */
 	public void setOptionsFile(String optionsFile) {
@@ -262,7 +274,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * Specify jshint options as a commas delimited list i.e. asi=true,
 	 * evil=false. These options override any options specified using the
 	 * optionsFile attribute
-	 * 
+	 *
 	 * @param options
 	 */
 	public void setOptions(String options) {
@@ -272,15 +284,15 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	/**
 	 * The JSHint ant task is packaged with an embedded copy of jshint. But a
 	 * user can specify there another copy of jshint using this attribute
-	 * 
+	 *
 	 * @param jshintSrc
 	 *            The location of the jshint.js file to use
 	 */
 	public void setJshintSrc(String jshintSrc) {
 		this.jshintSrc = jshintSrc;
 	}
-	
-	
+
+
 	/**
 	 * A comma separated list of global variables to use when linting all files
 	 * @param globals
@@ -288,12 +300,12 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	public void setGlobals(String globals) {
 		this.globals = globals;
 	}
-	
+
 	/**
 	 * Specify jshint globals in a properties file and point to the file using
 	 * the options attribute
-	 * 
-	 * @param options
+	 *
+	 * @param globalsFile
 	 *            Location of the global properties file
 	 */
 	public void setGlobalsFile(String globalsFile) {
