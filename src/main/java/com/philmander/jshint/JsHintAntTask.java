@@ -187,17 +187,18 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			JsHintReporter reporter = null;
 
 			// pick a reporter implementation
-			if (reportType.getType().trim().equalsIgnoreCase(PLAIN_REPORT)) {
+            String reportTypeKey = reportType.getType().trim();
+
+			if (reportTypeKey.equalsIgnoreCase(PLAIN_REPORT)) {
 				reporter = new PlainJsHintReporter(report);
 
-			} else if (reportType.getType().trim().equalsIgnoreCase(XML_REPORT)) {
-				// default to plain reporter
+			} else if (reportTypeKey.equalsIgnoreCase(XML_REPORT)) {
 				reporter = new XmlJsHintReporter(report);
 
-			} else if(reportType.getType().trim().equalsIgnoreCase(JSLINT_XML_REPORT)) {
+			} else if(reportTypeKey.equalsIgnoreCase(JSLINT_XML_REPORT)) {
 				reporter = new XmlJsLintReporter(report);
 
-			} else if(reportType.getType().trim().equalsIgnoreCase(HTML_REPORT)){
+			} else if(reportTypeKey.equalsIgnoreCase(HTML_REPORT)){
                 reporter = new HtmlJsHintReporter(report);
             }
 
