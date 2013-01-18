@@ -37,7 +37,16 @@ public class HtmlJsHintReporter implements JsHintReporter {
             throw new IllegalArgumentException("A JsHintReport is required to successfuly build a HTML report.");
         }
 
-        String detailsSectionStart = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
+        String pageTitle = "JSHint details";
+
+        String pageHeader = "<!DOCTYPE html>" +
+                                    "<html>" +
+                                    "<head>" +
+                                    "<title>" + pageTitle + "</title>" +
+                                    "</head>" +
+                                    "<body>";
+
+        String detailsSectionStart = "<div class=\"section\"><h2>" + pageTitle + "</h2>";
 
 
         StringBuilder errors = new StringBuilder();
@@ -47,7 +56,7 @@ public class HtmlJsHintReporter implements JsHintReporter {
                 errors.append("<div class=\"section\"><h3>").append(eachResult.getFile()).append("</h3>");
 
 
-                errors.append("<table border=\"0\" class=\"bodyTable\">" +
+                errors.append("<table>" +
                                       "<tr class=\"a\">" +
                                       "<th>Reason</th>" +
                                       "<th>Evidence</th>" +
@@ -75,8 +84,9 @@ public class HtmlJsHintReporter implements JsHintReporter {
 
         String detailsSectiondEnd = "</div>";
 
+        String pageFooter = "</body></html>";
 
-        return detailsSectionStart + errors.toString() + detailsSectiondEnd;
+        return pageHeader + detailsSectionStart + errors.toString() + detailsSectiondEnd + pageFooter;
     }
 
     /**

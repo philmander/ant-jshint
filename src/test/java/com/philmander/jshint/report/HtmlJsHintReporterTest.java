@@ -23,11 +23,18 @@ public class HtmlJsHintReporterTest {
     @Test
     public void createReport_with1FileReadAnd1Error_generatesHTMLReport() {
 
-        String pageHeader = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
+        String pageHeader = "<!DOCTYPE html>" +
+                                    "<html>" +
+                                    "<head>" +
+                                    "<title>JSHint details</title>" +
+                                    "</head>" +
+                                    "<body>";
+
+        String detailsSectionStart = "<div class=\"section\"><h2>JSHint details</h2>";
 
         String fileSection = "<div class=\"section\"><h3>a/path/to/a/file/aFile.js</h3>";
 
-        String tableHeader = "<table border=\"0\" class=\"bodyTable\">" +
+        String tableHeader = "<table>" +
                                      "<tr class=\"a\">" +
                                      "<th>Reason</th>" +
                                      "<th>Evidence</th>" +
@@ -44,7 +51,9 @@ public class HtmlJsHintReporterTest {
 
         String detailsSectionEnd = "</div>";
 
-        String expectedHtml = pageHeader + fileSection + tableHeader + anError + fileEnd + detailsSectionEnd;
+        String pageFooter = "</body></html>";
+
+        String expectedHtml = pageHeader + detailsSectionStart + fileSection + tableHeader + anError + fileEnd + detailsSectionEnd + pageFooter;
 
         JsHintReport dummyReport = new JsHintReport(1);
         JsHintResult dummyResult = new JsHintResult("a/path/to/a/file/aFile.js");
@@ -73,13 +82,22 @@ public class HtmlJsHintReporterTest {
     @Test
     public void createReport_with1FileReadAnd0Error_generatesHTMLReportWithNoErrorsDisplayed() {
 
-        String pageHeader = "<div class=\"section\"><h2>JsHint details<a name=\"Details\"></a></h2>";
+        String pageHeader = "<!DOCTYPE html>" +
+                                    "<html>" +
+                                    "<head>" +
+                                    "<title>JSHint details</title>" +
+                                    "</head>" +
+                                    "<body>";
+
+        String detailsSectionStart = "<div class=\"section\"><h2>JSHint details</h2>";
 
         String noErrorsToDisplay = "<h3>There are no JSHint errors to display.</h3>";
 
-        String fileEnd = "</div>";
+        String detailsSectionEnd = "</div>";
 
-        String expectedHtml = pageHeader + noErrorsToDisplay + fileEnd;
+        String pageFooter = "</body></html>";
+
+        String expectedHtml = pageHeader + detailsSectionStart + noErrorsToDisplay + detailsSectionEnd + pageFooter;
 
         JsHintReport dummyReport = new JsHintReport(1);
         JsHintResult dummyResult = new JsHintResult("a/path/to/a/file/aFile.js");
