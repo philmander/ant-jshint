@@ -56,7 +56,7 @@ public class HtmlJsHintReporter implements JsHintReporter {
                 errors.append("<div class=\"section\"><h3>").append(eachResult.getFile()).append("</h3>");
 
 
-                errors.append("<table>" +
+                errors.append("<table border=\"1\">" +
                                       "<tr class=\"a\">" +
                                       "<th>Reason</th>" +
                                       "<th>Evidence</th>" +

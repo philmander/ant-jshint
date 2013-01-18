@@ -34,7 +34,7 @@ public class HtmlJsHintReporterTest {
 
         String fileSection = "<div class=\"section\"><h3>a/path/to/a/file/aFile.js</h3>";
 
-        String tableHeader = "<table>" +
+        String tableHeader = "<table border=\"1\">" +
                                      "<tr class=\"a\">" +
                                      "<th>Reason</th>" +
                                      "<th>Evidence</th>" +
