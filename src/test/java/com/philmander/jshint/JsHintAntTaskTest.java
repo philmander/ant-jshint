@@ -60,6 +60,26 @@ public class JsHintAntTaskTest extends BuildFileTest
     		assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
     	}
 	}
+
+    @Test
+    @Ignore
+    public void testTask_optionsJshintrcFile() throws IOException {
+
+        File path = this.getProject().getBaseDir();
+        String jshintrc = ".jshintrc";
+
+        File jshintrcFile = new File(path, "_" + jshintrc);
+        jshintrcFile.renameTo(new File(path, jshintrc));
+        try {
+            executeTarget("testOptionsJshintrcFile");
+        } catch(BuildException e) {
+            int expectedErrors = 4;
+            assertEquals(PlainJsHintReporter.getFailureMessage(expectedErrors), e.getMessage());
+        } finally {
+            jshintrcFile = new File(path, jshintrc);
+            jshintrcFile.renameTo(new File(path, "_" + jshintrc));
+        }
+    }
 	
 	@Test
 	public void testTask_customFile() throws IOException {	

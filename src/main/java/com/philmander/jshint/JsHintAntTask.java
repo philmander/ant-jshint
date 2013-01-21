@@ -34,7 +34,9 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	
 	protected final String XML_REPORT = "xml"; 
 	
-	protected final String JSLINT_XML_REPORT = "jslint-xml"; 
+	protected final String JSLINT_XML_REPORT = "jslint-xml";
+
+    private final String JSHINTRC_FILE = ".jshintrc";
 	
 	private File dir;
 
@@ -72,7 +74,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 		if (files.length > 0) {
 
 			try {
-
 				// lint the code using the jshint runner
 				JsHintRunner runner = new JsHintRunner(jshintSrc);
 				runner.setLogger(this);
@@ -109,6 +110,12 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	}
 	
 	private Properties loadOptions() {
+
+        if(optionsFile == null) {
+            //default to use jshint rc
+            optionsFile = getProject().getBaseDir() + "/" + JSHINTRC_FILE;
+        }
+
 		Properties props = loadProperties(options, optionsFile);
 		logProperties("custom options", props);
 
@@ -131,7 +138,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			try {
 				File propertiesFile = new File(propertiesFilePath);
 				if (propertiesFile.exists()) {
-					if(propertiesFilePath.endsWith(".json")) {
+					if(propertiesFilePath.endsWith(".json") || propertiesFilePath.endsWith(JSHINTRC_FILE)) {
 						ObjectMapper mapper = new ObjectMapper();
 						@SuppressWarnings("unchecked")
 						Map<String, String> jsonProps = mapper.readValue(propertiesFile, Map.class);
@@ -251,8 +258,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * Specify jshint options in a properties file and point to the file using
 	 * the options attribute
 	 * 
-	 * @param options
-	 *            Location of the options properties file
+	 * @param optionsFile  Location of the options properties file
 	 */
 	public void setOptionsFile(String optionsFile) {
 		this.optionsFile = optionsFile;
@@ -293,8 +299,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * Specify jshint globals in a properties file and point to the file using
 	 * the options attribute
 	 * 
-	 * @param options
-	 *            Location of the global properties file
+	 * @param globalsFile Location of the global properties file
 	 */
 	public void setGlobalsFile(String globalsFile) {
 		this.globalsFile = globalsFile;

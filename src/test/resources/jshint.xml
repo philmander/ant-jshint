@@ -47,11 +47,19 @@
 
 	<target name="testOptionsJsonFile" depends="makeTask">
 
-			<jshint dir="${test.resources.dir}/js" optionsFile="${test.resources.dir}/jshint-options.json">
-				<include name="test-options-json-file.js" />
-			</jshint>
+        <jshint dir="${test.resources.dir}/js" optionsFile="${test.resources.dir}/jshint-options.json">
+            <include name="test-options-json-file.js" />
+        </jshint>
 
-		</target>
+	</target>
+
+    <target name="testOptionsJshintrcFile" depends="makeTask">
+
+        <jshint dir="${test.resources.dir}/js">
+            <include name="test-options-json-file.js" />
+        </jshint>
+
+    </target>
 	
 	<target name="testOptionsFile" depends="makeTask">
 
