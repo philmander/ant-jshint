@@ -35,7 +35,7 @@
 /*
  JSHINT is a global function. It takes two parameters.
 
-     var myResult = JSHINT(source, option);
+ var myResult = JSHINT(source, option);
 
  The first parameter is either a string or an array of strings. If it is a
  string, it will be split on '\n' or '\r'. If it is an array of strings, it
@@ -55,15 +55,15 @@
  JSHINT.errors is an array of objects containing these members:
 
  {
-     line      : The line (relative to 1) at which the lint was found
-     character : The character (relative to 1) at which the lint was found
-     reason    : The problem
-     evidence  : The text line in which the problem occurred
-     raw       : The raw message before the details were inserted
-     a         : The first detail
-     b         : The second detail
-     c         : The third detail
-     d         : The fourth detail
+ line      : The line (relative to 1) at which the lint was found
+ character : The character (relative to 1) at which the lint was found
+ reason    : The problem
+ evidence  : The text line in which the problem occurred
+ raw       : The raw message before the details were inserted
+ a         : The first detail
+ b         : The second detail
+ c         : The third detail
+ d         : The fourth detail
  }
 
  If a fatal error was found, a null will be the last element of the
@@ -71,82 +71,82 @@
 
  You can request a data structure which contains JSHint's results.
 
-     var myData = JSHINT.data();
+ var myData = JSHINT.data();
 
  It returns a structure with this form:
 
  {
-     errors: [
-         {
-             line: NUMBER,
-             character: NUMBER,
-             reason: STRING,
-             evidence: STRING
-         }
-     ],
-     functions: [
-         name: STRING,
-         line: NUMBER,
-         character: NUMBER,
-         last: NUMBER,
-         lastcharacter: NUMBER,
-         param: [
-             STRING
-         ],
-         closure: [
-             STRING
-         ],
-         var: [
-             STRING
-         ],
-         exception: [
-             STRING
-         ],
-         outer: [
-             STRING
-         ],
-         unused: [
-             STRING
-         ],
-         global: [
-             STRING
-         ],
-         label: [
-             STRING
-         ]
-     ],
-     globals: [
-         STRING
-     ],
-     member: {
-         STRING: NUMBER
-     },
-     unused: [
-         {
-             name: STRING,
-             line: NUMBER
-         }
-     ],
-     implieds: [
-         {
-             name: STRING,
-             line: NUMBER
-         }
-     ],
-     urls: [
-         STRING
-     ],
-     json: BOOLEAN
+ errors: [
+ {
+ line: NUMBER,
+ character: NUMBER,
+ reason: STRING,
+ evidence: STRING
+ }
+ ],
+ functions: [
+ name: STRING,
+ line: NUMBER,
+ character: NUMBER,
+ last: NUMBER,
+ lastcharacter: NUMBER,
+ param: [
+ STRING
+ ],
+ closure: [
+ STRING
+ ],
+ var: [
+ STRING
+ ],
+ exception: [
+ STRING
+ ],
+ outer: [
+ STRING
+ ],
+ unused: [
+ STRING
+ ],
+ global: [
+ STRING
+ ],
+ label: [
+ STRING
+ ]
+ ],
+ globals: [
+ STRING
+ ],
+ member: {
+ STRING: NUMBER
+ },
+ unused: [
+ {
+ name: STRING,
+ line: NUMBER
+ }
+ ],
+ implieds: [
+ {
+ name: STRING,
+ line: NUMBER
+ }
+ ],
+ urls: [
+ STRING
+ ],
+ json: BOOLEAN
  }
 
  Empty arrays will not be included.
 
-*/
+ */
 
 /*jshint
  evil: true, nomen: false, onevar: false, regexp: false, strict: true, boss: true,
  undef: true, maxlen: 100, indent: 4, quotmark: double, unused: true
-*/
+ */
 
 /*members "\b", "\t", "\n", "\f", "\r", "!=", "!==", "\"", "%", "(begin)",
  "(breakage)", "(character)", "(context)", "(error)", "(explicitNewcap)", "(global)",
@@ -252,7 +252,7 @@ var JSHINT = (function () {
             "%"  : true
         },
 
-        // These are the JSHint boolean options.
+    // These are the JSHint boolean options.
         boolOptions = {
             asi         : true, // if automatic semicolon insertion should be tolerated
             bitwise     : true, // if bitwise operators should not be allowed
@@ -263,7 +263,7 @@ var JSHINT = (function () {
             curly       : true, // if curly braces around all blocks should be required
             debug       : true, // if debugger statements should be allowed
             devel       : true, // if logging globals should be predefined (console,
-                                // alert, etc.)
+            // alert, etc.)
             dojo        : true, // if Dojo Toolkit globals should be predefined
             eqeqeq      : true, // if === should be required
             eqnull      : true, // if == null comparisons should be tolerated
@@ -274,40 +274,39 @@ var JSHINT = (function () {
             forin       : true, // if for in statements must filter
             funcscope   : true, // if only function scope should be used for scope tests
             globalstrict: true, // if global "use strict"; should be allowed (also
-                                // enables 'strict')
+            // enables 'strict')
             immed       : true, // if immediate invocations must be wrapped in parens
             iterator    : true, // if the `__iterator__` property should be allowed
             jquery      : true, // if jQuery globals should be predefined
             lastsemic   : true, // if semicolons may be ommitted for the trailing
-                                // statements inside of a one-line blocks.
+            // statements inside of a one-line blocks.
             latedef     : true, // if the use before definition should not be tolerated
             laxbreak    : true, // if line breaks should not be checked
             laxcomma    : true, // if line breaks should not be checked around commas
             loopfunc    : true, // if functions should be allowed to be defined within
-                                // loops
-            mixedtabs   : true, // if there are mixed spaces and tabulations
+            // loops
             mootools    : true, // if MooTools globals should be predefined
             multistr    : true, // allow multiline strings
             newcap      : true, // if constructor names must be capitalized
             noarg       : true, // if arguments.caller and arguments.callee should be
-                                // disallowed
+            // disallowed
             node        : true, // if the Node.js environment globals should be
-                                // predefined
+            // predefined
             noempty     : true, // if empty blocks should be disallowed
             nonew       : true, // if using `new` for side-effects should be disallowed
             nonstandard : true, // if non-standard (but widely adopted) globals should
-                                // be predefined
+            // be predefined
             nomen       : true, // if names should be checked
             onevar      : true, // if only one var statement per function should be
-                                // allowed
+            // allowed
             onecase     : true, // if one case switch statements should be allowed
             passfail    : true, // if the scan should stop on first error
             plusplus    : true, // if increment/decrement should not be allowed
             proto       : true, // if the `__proto__` property should be allowed
             prototypejs : true, // if Prototype and Scriptaculous globals should be
-                                // predefined
+            // predefined
             regexdash   : true, // if unescaped first/last dash (-) inside brackets
-                                // should be tolerated
+            // should be tolerated
             regexp      : true, // if the . should not be allowed in regexp literals
             rhino       : true, // if the Rhino environment globals should be predefined
             undef       : true, // if variables should be declared before used
@@ -315,24 +314,24 @@ var JSHINT = (function () {
             scripturl   : true, // if script-targeted URLs should be tolerated
             shadow      : true, // if variable shadowing should be tolerated
             smarttabs   : true, // if smarttabs should be tolerated
-                                // (http://www.emacswiki.org/emacs/SmartTabs)
+            // (http://www.emacswiki.org/emacs/SmartTabs)
             strict      : true, // require the "use strict"; pragma
             sub         : true, // if all forms of subscript notation are tolerated
             supernew    : true, // if `new function () { ... };` and `new Object;`
-                                // should be tolerated
+            // should be tolerated
             trailing    : true, // if trailing whitespace rules apply
             validthis   : true, // if 'this' inside a non-constructor function is valid.
-                                // This is a function scoped option only.
+            // This is a function scoped option only.
             withstmt    : true, // if with statements should be allowed
             white       : true, // if strict whitespace rules apply
             worker      : true, // if Web Worker script symbols should be allowed
             wsh         : true, // if the Windows Scripting Host environment globals
-                                // should be predefined
+            // should be predefined
             yui         : true  // YUI variables should be predefined
         },
 
-        // These are the JSHint options that can take any value
-        // (we use this object to detect invalid options)
+    // These are the JSHint options that can take any value
+    // (we use this object to detect invalid options)
         valOptions = {
             maxlen       : false,
             indent       : false,
@@ -346,8 +345,8 @@ var JSHINT = (function () {
             maxcomplexity: false  // {int} max cyclomatic complexity per function
         },
 
-        // These are JSHint boolean options which are shared with JSLint
-        // where the definition in JSHint is opposite JSLint
+    // These are JSHint boolean options which are shared with JSLint
+    // where the definition in JSHint is opposite JSLint
         invertedOptions = {
             bitwise     : true,
             forin       : true,
@@ -363,8 +362,8 @@ var JSHINT = (function () {
             onevar      : true
         },
 
-        // These are JSHint boolean options which are shared with JSLint
-        // where the name has been changed but the effect is unchanged
+    // These are JSHint boolean options which are shared with JSLint
+    // where the name has been changed but the effect is unchanged
         renamedOptions = {
             eqeq        : "eqeqeq",
             vars        : "onevar",
@@ -372,8 +371,8 @@ var JSHINT = (function () {
         },
 
 
-        // browser contains a set of global names which are commonly provided by a
-        // web browser environment.
+    // browser contains a set of global names which are commonly provided by a
+    // web browser environment.
         browser = {
             ArrayBuffer              :  false,
             ArrayBufferView          :  false,
@@ -713,8 +712,8 @@ var JSHINT = (function () {
         scope,      // The current scope
         stack,
 
-        // standard contains the global names that are provided by the
-        // ECMAScript standard.
+    // standard contains the global names that are provided by the
+    // ECMAScript standard.
         standard = {
             Array               : false,
             Boolean             : false,
@@ -749,7 +748,7 @@ var JSHINT = (function () {
             WeakMap             : false
         },
 
-        // widely adopted global names that are not part of ECMAScript standard
+    // widely adopted global names that are not part of ECMAScript standard
         nonstandard = {
             escape              : false,
             unescape            : false
@@ -1119,21 +1118,19 @@ var JSHINT = (function () {
             s = lines[line];
             line += 1;
 
-            if (option.mixedtabs) {
-                // If smarttabs option is used check for spaces followed by tabs only.
-                // Otherwise check for any occurence of mixed tabs and spaces.
-                // Tabs and one space followed by block comment is allowed.
-                if (option.smarttabs) {
-                    // negative look-behind for "//"
-                    match = s.match(/(\/\/)? \t/);
-                    at = match && !match[1] ? 0 : -1;
-                } else {
-                    at = s.search(/ \t|\t [^\*]/);
-                }
-
-                if (at >= 0)
-                    warningAt("Mixed spaces and tabs.", line, at + 1);
+            // If smarttabs option is used check for spaces followed by tabs only.
+            // Otherwise check for any occurence of mixed tabs and spaces.
+            // Tabs and one space followed by block comment is allowed.
+            if (option.smarttabs) {
+                // negative look-behind for "//"
+                match = s.match(/(\/\/)? \t/);
+                at = match && !match[1] ? 0 : -1;
+            } else {
+                at = s.search(/ \t|\t [^\*]/);
             }
+
+            if (at >= 0)
+                warningAt("Mixed spaces and tabs.", line, at + 1);
 
             s = s.replace(/\t/g, tab);
             at = s.search(cx);
@@ -1195,7 +1192,7 @@ var JSHINT = (function () {
             if (type === "(color)" || type === "(range)") {
                 t = {type: type};
             } else if (type === "(punctuator)" ||
-                    (type === "(identifier)" && is_own(syntax, value))) {
+                (type === "(identifier)" && is_own(syntax, value))) {
                 t = syntax[value] || syntax["(error)"];
             } else {
                 t = syntax[type];
@@ -1222,8 +1219,8 @@ var JSHINT = (function () {
             if (i !== "(endline)") {
                 prereg = i &&
                     (("(,=:[!&|?{};".indexOf(i.charAt(i.length - 1)) >= 0) ||
-                    i === "return" ||
-                    i === "case");
+                        i === "return" ||
+                        i === "case");
             }
             return t;
         }
@@ -1255,22 +1252,22 @@ var JSHINT = (function () {
                 from = character;
                 if (s.charAt(0) !== begin) {
                     errorAt("Expected '{a}' and instead saw '{b}'.",
-                            line, character, begin, s.charAt(0));
+                        line, character, begin, s.charAt(0));
                 }
                 for (;;) {
                     s = s.slice(1);
                     character += 1;
                     c = s.charAt(0);
                     switch (c) {
-                    case "":
-                        errorAt("Missing '{a}'.", line, character, c);
-                        break;
-                    case end:
-                        s = s.slice(1);
-                        character += 1;
-                        return it("(range)", value);
-                    case "\\":
-                        warningAt("Unexpected '{a}'.", line, character, c);
+                        case "":
+                            errorAt("Missing '{a}'.", line, character, c);
+                            break;
+                        case end:
+                            s = s.slice(1);
+                            character += 1;
+                            return it("(range)", value);
+                        case "\\":
+                            warningAt("Unexpected '{a}'.", line, character, c);
                     }
                     value += c;
                 }
@@ -1301,21 +1298,21 @@ var JSHINT = (function () {
 
                     if (jsonmode && x !== "\"") {
                         warningAt("Strings must use doublequote.",
-                                line, character);
+                            line, character);
                     }
 
                     if (option.quotmark) {
                         if (option.quotmark === "single" && x !== "'") {
                             warningAt("Strings must use singlequote.",
-                                    line, character);
+                                line, character);
                         } else if (option.quotmark === "double" && x !== "\"") {
                             warningAt("Strings must use doublequote.",
-                                    line, character);
+                                line, character);
                         } else if (option.quotmark === true) {
                             quotmark = quotmark || x;
                             if (quotmark !== x) {
                                 warningAt("Mixed double and single quotes.",
-                                        line, character);
+                                    line, character);
                             }
                         }
                     }
@@ -1324,7 +1321,7 @@ var JSHINT = (function () {
                         var i = parseInt(s.substr(j + 1, n), 16);
                         j += n;
                         if (i >= 32 && i <= 126 &&
-                                i !== 34 && i !== 92 && i !== 39) {
+                            i !== 34 && i !== 92 && i !== 39) {
                             warningAt("Unnecessary escapement.", line, character);
                         }
                         character += n;
@@ -1332,7 +1329,7 @@ var JSHINT = (function () {
                     }
 
                     j = 0;
-unclosedString:     for (;;) {
+                    unclosedString:     for (;;) {
                         while (j >= s.length) {
                             j = 0;
 
@@ -1361,85 +1358,85 @@ unclosedString:     for (;;) {
                                 break;
                             }
                             warningAt("Control character in string: {a}.",
-                                    line, character + j, s.slice(0, j));
+                                line, character + j, s.slice(0, j));
                         } else if (c === "\\") {
                             j += 1;
                             character += 1;
                             c = s.charAt(j);
                             n = s.charAt(j + 1);
                             switch (c) {
-                            case "\\":
-                            case "\"":
-                            case "/":
-                                break;
-                            case "\'":
-                                if (jsonmode) {
-                                    warningAt("Avoid \\'.", line, character);
-                                }
-                                break;
-                            case "b":
-                                c = "\b";
-                                break;
-                            case "f":
-                                c = "\f";
-                                break;
-                            case "n":
-                                c = "\n";
-                                break;
-                            case "r":
-                                c = "\r";
-                                break;
-                            case "t":
-                                c = "\t";
-                                break;
-                            case "0":
-                                c = "\0";
-                                // Octal literals fail in strict mode
-                                // check if the number is between 00 and 07
-                                // where 'n' is the token next to 'c'
-                                if (n >= 0 && n <= 7 && directive["use strict"]) {
-                                    warningAt(
-                                    "Octal literals are not allowed in strict mode.",
-                                    line, character);
-                                }
-                                break;
-                            case "u":
-                                esc(4);
-                                break;
-                            case "v":
-                                if (jsonmode) {
-                                    warningAt("Avoid \\v.", line, character);
-                                }
-                                c = "\v";
-                                break;
-                            case "x":
-                                if (jsonmode) {
-                                    warningAt("Avoid \\x-.", line, character);
-                                }
-                                esc(2);
-                                break;
-                            case "":
-                                // last character is escape character
-                                // always allow new line if escaped, but show
-                                // warning if option is not set
-                                allowNewLine = true;
-                                if (option.multistr) {
+                                case "\\":
+                                case "\"":
+                                case "/":
+                                    break;
+                                case "\'":
                                     if (jsonmode) {
-                                        warningAt("Avoid EOL escapement.", line, character);
+                                        warningAt("Avoid \\'.", line, character);
                                     }
-                                    c = "";
-                                    character -= 1;
                                     break;
-                                }
-                                warningAt("Bad escapement of EOL. Use option multistr if needed.",
-                                    line, character);
-                                break;
-                            case "!":
-                                if (s.charAt(j - 2) === "<")
+                                case "b":
+                                    c = "\b";
                                     break;
+                                case "f":
+                                    c = "\f";
+                                    break;
+                                case "n":
+                                    c = "\n";
+                                    break;
+                                case "r":
+                                    c = "\r";
+                                    break;
+                                case "t":
+                                    c = "\t";
+                                    break;
+                                case "0":
+                                    c = "\0";
+                                    // Octal literals fail in strict mode
+                                    // check if the number is between 00 and 07
+                                    // where 'n' is the token next to 'c'
+                                    if (n >= 0 && n <= 7 && directive["use strict"]) {
+                                        warningAt(
+                                            "Octal literals are not allowed in strict mode.",
+                                            line, character);
+                                    }
+                                    break;
+                                case "u":
+                                    esc(4);
+                                    break;
+                                case "v":
+                                    if (jsonmode) {
+                                        warningAt("Avoid \\v.", line, character);
+                                    }
+                                    c = "\v";
+                                    break;
+                                case "x":
+                                    if (jsonmode) {
+                                        warningAt("Avoid \\x-.", line, character);
+                                    }
+                                    esc(2);
+                                    break;
+                                case "":
+                                    // last character is escape character
+                                    // always allow new line if escaped, but show
+                                    // warning if option is not set
+                                    allowNewLine = true;
+                                    if (option.multistr) {
+                                        if (jsonmode) {
+                                            warningAt("Avoid EOL escapement.", line, character);
+                                        }
+                                        c = "";
+                                        character -= 1;
+                                        break;
+                                    }
+                                    warningAt("Bad escapement of EOL. Use option multistr if needed.",
+                                        line, character);
+                                    break;
+                                case "!":
+                                    if (s.charAt(j - 2) === "<")
+                                        break;
                                 /*falls through*/
-                            default:
-                                warningAt("Bad escapement.", line, character);
+                                default:
+                                    warningAt("Bad escapement.", line, character);
                             }
                         }
                         r += c;
@@ -1467,13 +1464,13 @@ unclosedString:     for (;;) {
                         }
                     } else {
 
-    //      identifier
+                        //      identifier
 
                         if (isAlpha(c) || c === "_" || c === "$") {
                             return it("(identifier)", t);
                         }
 
-    //      number
+                        //      number
 
                         if (isDigit(c)) {
                             if (!isFinite(Number(t))) {
@@ -1482,7 +1479,7 @@ unclosedString:     for (;;) {
                             }
                             if (isAlpha(s.substr(0, 1))) {
                                 warningAt("Missing space after '{a}'.",
-                                        line, character, t);
+                                    line, character, t);
                             }
                             if (c === "0") {
                                 d = t.substr(1, 1);
@@ -1493,351 +1490,351 @@ unclosedString:     for (;;) {
                                     }
                                 } else if (jsonmode && (d === "x" || d === "X")) {
                                     warningAt("Avoid 0x-. '{a}'.",
-                                            line, character, t);
+                                        line, character, t);
                                 }
                             }
                             if (t.substr(t.length - 1) === ".") {
                                 warningAt(
-"A trailing decimal point can be confused with a dot '{a}'.", line, character, t);
+                                    "A trailing decimal point can be confused with a dot '{a}'.", line, character, t);
                             }
                             return it("(number)", t);
                         }
                         switch (t) {
 
-    //      string
+                            //      string
 
-                        case "\"":
-                        case "'":
-                            return string(t);
+                            case "\"":
+                            case "'":
+                                return string(t);
 
-    //      // comment
+                            //      // comment
 
-                        case "//":
-                            s = "";
-                            token.comment = true;
-                            break;
+                            case "//":
+                                s = "";
+                                token.comment = true;
+                                break;
 
-    //      /* comment
+                            //      /* comment
 
-                        case "/*":
-                            for (;;) {
-                                i = s.search(lx);
-                                if (i >= 0) {
-                                    break;
-                                }
-                                if (!nextLine()) {
-                                    errorAt("Unclosed comment.", line, character);
-                                }
-                            }
-                            s = s.substr(i + 2);
-                            token.comment = true;
-                            break;
-
-    //      /*members /*jshint /*global
-
-                        case "/*members":
-                        case "/*member":
-                        case "/*jshint":
-                        case "/*jslint":
-                        case "/*global":
-                        case "*/":
-                            return {
-                                value: t,
-                                type: "special",
-                                line: line,
-                                character: character,
-                                from: from
-                            };
-
-                        case "":
-                            break;
-    //      /
-                        case "/":
-                            if (s.charAt(0) === "=") {
-                                errorAt("A regular expression literal can be confused with '/='.",
-                                    line, from);
-                            }
-
-                            if (prereg) {
-                                depth = 0;
-                                captures = 0;
-                                l = 0;
+                            case "/*":
                                 for (;;) {
-                                    b = true;
-                                    c = s.charAt(l);
-                                    l += 1;
-                                    switch (c) {
-                                    case "":
-                                        errorAt("Unclosed regular expression.", line, from);
-                                        return quit("Stopping.", line, from);
-                                    case "/":
-                                        if (depth > 0) {
-                                            warningAt("{a} unterminated regular expression " +
-                                                "group(s).", line, from + l, depth);
-                                        }
-                                        c = s.substr(0, l - 1);
-                                        q = {
-                                            g: true,
-                                            i: true,
-                                            m: true
-                                        };
-                                        while (q[s.charAt(l)] === true) {
-                                            q[s.charAt(l)] = false;
-                                            l += 1;
-                                        }
-                                        character += l;
-                                        s = s.substr(l);
-                                        q = s.charAt(0);
-                                        if (q === "/" || q === "*") {
-                                            errorAt("Confusing regular expression.",
-                                                    line, from);
-                                        }
-                                        return it("(regexp)", c);
-                                    case "\\":
+                                    i = s.search(lx);
+                                    if (i >= 0) {
+                                        break;
+                                    }
+                                    if (!nextLine()) {
+                                        errorAt("Unclosed comment.", line, character);
+                                    }
+                                }
+                                s = s.substr(i + 2);
+                                token.comment = true;
+                                break;
+
+                            //      /*members /*jshint /*global
+
+                            case "/*members":
+                            case "/*member":
+                            case "/*jshint":
+                            case "/*jslint":
+                            case "/*global":
+                            case "*/":
+                                return {
+                                    value: t,
+                                    type: "special",
+                                    line: line,
+                                    character: character,
+                                    from: from
+                                };
+
+                            case "":
+                                break;
+                            //      /
+                            case "/":
+                                if (s.charAt(0) === "=") {
+                                    errorAt("A regular expression literal can be confused with '/='.",
+                                        line, from);
+                                }
+
+                                if (prereg) {
+                                    depth = 0;
+                                    captures = 0;
+                                    l = 0;
+                                    for (;;) {
+                                        b = true;
                                         c = s.charAt(l);
-                                        if (c < " ") {
-                                            warningAt(
-"Unexpected control character in regular expression.", line, from + l);
-                                        } else if (c === "<") {
-                                            warningAt(
-"Unexpected escaped character '{a}' in regular expression.", line, from + l, c);
-                                        }
                                         l += 1;
-                                        break;
-                                    case "(":
-                                        depth += 1;
-                                        b = false;
-                                        if (s.charAt(l) === "?") {
-                                            l += 1;
-                                            switch (s.charAt(l)) {
-                                            case ":":
-                                            case "=":
-                                            case "!":
-                                                l += 1;
-                                                break;
-                                            default:
-                                                warningAt(
-"Expected '{a}' and instead saw '{b}'.", line, from + l, ":", s.charAt(l));
-                                            }
-                                        } else {
-                                            captures += 1;
-                                        }
-                                        break;
-                                    case "|":
-                                        b = false;
-                                        break;
-                                    case ")":
-                                        if (depth === 0) {
-                                            warningAt("Unescaped '{a}'.",
-                                                    line, from + l, ")");
-                                        } else {
-                                            depth -= 1;
-                                        }
-                                        break;
-                                    case " ":
-                                        q = 1;
-                                        while (s.charAt(l) === " ") {
-                                            l += 1;
-                                            q += 1;
-                                        }
-                                        if (q > 1) {
-                                            warningAt(
-"Spaces are hard to count. Use {{a}}.", line, from + l, q);
-                                        }
-                                        break;
-                                    case "[":
-                                        c = s.charAt(l);
-                                        if (c === "^") {
-                                            l += 1;
-                                            if (s.charAt(l) === "]") {
-                                                errorAt("Unescaped '{a}'.",
-                                                    line, from + l, "^");
-                                            }
-                                        }
-                                        if (c === "]") {
-                                            warningAt("Empty class.", line,
-                                                    from + l - 1);
-                                        }
-                                        isLiteral = false;
-                                        isInRange = false;
-klass:                                  do {
-                                            c = s.charAt(l);
-                                            l += 1;
-                                            switch (c) {
-                                            case "[":
-                                            case "^":
-                                                warningAt("Unescaped '{a}'.",
-                                                        line, from + l, c);
-                                                if (isInRange) {
-                                                    isInRange = false;
-                                                } else {
-                                                    isLiteral = true;
+                                        switch (c) {
+                                            case "":
+                                                errorAt("Unclosed regular expression.", line, from);
+                                                return quit("Stopping.", line, from);
+                                            case "/":
+                                                if (depth > 0) {
+                                                    warningAt("{a} unterminated regular expression " +
+                                                        "group(s).", line, from + l, depth);
                                                 }
-                                                break;
-                                            case "-":
-                                                if (isLiteral && !isInRange) {
-                                                    isLiteral = false;
-                                                    isInRange = true;
-                                                } else if (isInRange) {
-                                                    isInRange = false;
-                                                } else if (s.charAt(l) === "]") {
-                                                    isInRange = true;
-                                                } else {
-                                                    if (option.regexdash !== (l === 2 || (l === 3 &&
-                                                        s.charAt(1) === "^"))) {
-                                                        warningAt("Unescaped '{a}'.",
-                                                            line, from + l - 1, "-");
-                                                    }
-                                                    isLiteral = true;
+                                                c = s.substr(0, l - 1);
+                                                q = {
+                                                    g: true,
+                                                    i: true,
+                                                    m: true
+                                                };
+                                                while (q[s.charAt(l)] === true) {
+                                                    q[s.charAt(l)] = false;
+                                                    l += 1;
                                                 }
-                                                break;
-                                            case "]":
-                                                if (isInRange && !option.regexdash) {
-                                                    warningAt("Unescaped '{a}'.",
-                                                            line, from + l - 1, "-");
+                                                character += l;
+                                                s = s.substr(l);
+                                                q = s.charAt(0);
+                                                if (q === "/" || q === "*") {
+                                                    errorAt("Confusing regular expression.",
+                                                        line, from);
                                                 }
-                                                break klass;
+                                                return it("(regexp)", c);
                                             case "\\":
                                                 c = s.charAt(l);
                                                 if (c < " ") {
                                                     warningAt(
-"Unexpected control character in regular expression.", line, from + l);
+                                                        "Unexpected control character in regular expression.", line, from + l);
                                                 } else if (c === "<") {
                                                     warningAt(
-"Unexpected escaped character '{a}' in regular expression.", line, from + l, c);
+                                                        "Unexpected escaped character '{a}' in regular expression.", line, from + l, c);
                                                 }
                                                 l += 1;
-
-                                                // \w, \s and \d are never part of a character range
-                                                if (/[wsd]/i.test(c)) {
-                                                    if (isInRange) {
-                                                        warningAt("Unescaped '{a}'.",
-                                                            line, from + l, "-");
-                                                        isInRange = false;
+                                                break;
+                                            case "(":
+                                                depth += 1;
+                                                b = false;
+                                                if (s.charAt(l) === "?") {
+                                                    l += 1;
+                                                    switch (s.charAt(l)) {
+                                                        case ":":
+                                                        case "=":
+                                                        case "!":
+                                                            l += 1;
+                                                            break;
+                                                        default:
+                                                            warningAt(
+                                                                "Expected '{a}' and instead saw '{b}'.", line, from + l, ":", s.charAt(l));
                                                     }
-                                                    isLiteral = false;
-                                                } else if (isInRange) {
-                                                    isInRange = false;
                                                 } else {
-                                                    isLiteral = true;
+                                                    captures += 1;
                                                 }
                                                 break;
-                                            case "/":
-                                                warningAt("Unescaped '{a}'.",
-                                                        line, from + l - 1, "/");
+                                            case "|":
+                                                b = false;
+                                                break;
+                                            case ")":
+                                                if (depth === 0) {
+                                                    warningAt("Unescaped '{a}'.",
+                                                        line, from + l, ")");
+                                                } else {
+                                                    depth -= 1;
+                                                }
+                                                break;
+                                            case " ":
+                                                q = 1;
+                                                while (s.charAt(l) === " ") {
+                                                    l += 1;
+                                                    q += 1;
+                                                }
+                                                if (q > 1) {
+                                                    warningAt(
+                                                        "Spaces are hard to count. Use {{a}}.", line, from + l, q);
+                                                }
+                                                break;
+                                            case "[":
+                                                c = s.charAt(l);
+                                                if (c === "^") {
+                                                    l += 1;
+                                                    if (s.charAt(l) === "]") {
+                                                        errorAt("Unescaped '{a}'.",
+                                                            line, from + l, "^");
+                                                    }
+                                                }
+                                                if (c === "]") {
+                                                    warningAt("Empty class.", line,
+                                                        from + l - 1);
+                                                }
+                                                isLiteral = false;
+                                                isInRange = false;
+                                                klass:                                  do {
+                                                    c = s.charAt(l);
+                                                    l += 1;
+                                                    switch (c) {
+                                                        case "[":
+                                                        case "^":
+                                                            warningAt("Unescaped '{a}'.",
+                                                                line, from + l, c);
+                                                            if (isInRange) {
+                                                                isInRange = false;
+                                                            } else {
+                                                                isLiteral = true;
+                                                            }
+                                                            break;
+                                                        case "-":
+                                                            if (isLiteral && !isInRange) {
+                                                                isLiteral = false;
+                                                                isInRange = true;
+                                                            } else if (isInRange) {
+                                                                isInRange = false;
+                                                            } else if (s.charAt(l) === "]") {
+                                                                isInRange = true;
+                                                            } else {
+                                                                if (option.regexdash !== (l === 2 || (l === 3 &&
+                                                                    s.charAt(1) === "^"))) {
+                                                                    warningAt("Unescaped '{a}'.",
+                                                                        line, from + l - 1, "-");
+                                                                }
+                                                                isLiteral = true;
+                                                            }
+                                                            break;
+                                                        case "]":
+                                                            if (isInRange && !option.regexdash) {
+                                                                warningAt("Unescaped '{a}'.",
+                                                                    line, from + l - 1, "-");
+                                                            }
+                                                            break klass;
+                                                        case "\\":
+                                                            c = s.charAt(l);
+                                                            if (c < " ") {
+                                                                warningAt(
+                                                                    "Unexpected control character in regular expression.", line, from + l);
+                                                            } else if (c === "<") {
+                                                                warningAt(
+                                                                    "Unexpected escaped character '{a}' in regular expression.", line, from + l, c);
+                                                            }
+                                                            l += 1;
 
-                                                if (isInRange) {
-                                                    isInRange = false;
-                                                } else {
-                                                    isLiteral = true;
+                                                            // \w, \s and \d are never part of a character range
+                                                            if (/[wsd]/i.test(c)) {
+                                                                if (isInRange) {
+                                                                    warningAt("Unescaped '{a}'.",
+                                                                        line, from + l, "-");
+                                                                    isInRange = false;
+                                                                }
+                                                                isLiteral = false;
+                                                            } else if (isInRange) {
+                                                                isInRange = false;
+                                                            } else {
+                                                                isLiteral = true;
+                                                            }
+                                                            break;
+                                                        case "/":
+                                                            warningAt("Unescaped '{a}'.",
+                                                                line, from + l - 1, "/");
+
+                                                            if (isInRange) {
+                                                                isInRange = false;
+                                                            } else {
+                                                                isLiteral = true;
+                                                            }
+                                                            break;
+                                                        case "<":
+                                                            if (isInRange) {
+                                                                isInRange = false;
+                                                            } else {
+                                                                isLiteral = true;
+                                                            }
+                                                            break;
+                                                        default:
+                                                            if (isInRange) {
+                                                                isInRange = false;
+                                                            } else {
+                                                                isLiteral = true;
+                                                            }
+                                                    }
+                                                } while (c);
+                                                break;
+                                            case ".":
+                                                if (option.regexp) {
+                                                    warningAt("Insecure '{a}'.", line,
+                                                        from + l, c);
                                                 }
                                                 break;
-                                            case "<":
-                                                if (isInRange) {
-                                                    isInRange = false;
-                                                } else {
-                                                    isLiteral = true;
-                                                }
-                                                break;
-                                            default:
-                                                if (isInRange) {
-                                                    isInRange = false;
-                                                } else {
-                                                    isLiteral = true;
-                                                }
-                                            }
-                                        } while (c);
-                                        break;
-                                    case ".":
-                                        if (option.regexp) {
-                                            warningAt("Insecure '{a}'.", line,
+                                            case "]":
+                                            case "?":
+                                            case "{":
+                                            case "}":
+                                            case "+":
+                                            case "*":
+                                                warningAt("Unescaped '{a}'.", line,
                                                     from + l, c);
                                         }
-                                        break;
-                                    case "]":
-                                    case "?":
-                                    case "{":
-                                    case "}":
-                                    case "+":
-                                    case "*":
-                                        warningAt("Unescaped '{a}'.", line,
-                                                from + l, c);
-                                    }
-                                    if (b) {
-                                        switch (s.charAt(l)) {
-                                        case "?":
-                                        case "+":
-                                        case "*":
-                                            l += 1;
-                                            if (s.charAt(l) === "?") {
-                                                l += 1;
-                                            }
-                                            break;
-                                        case "{":
-                                            l += 1;
-                                            c = s.charAt(l);
-                                            if (c < "0" || c > "9") {
-                                                warningAt(
-"Expected a number and instead saw '{a}'.", line, from + l, c);
-                                                break; // No reason to continue checking numbers.
-                                            }
-                                            l += 1;
-                                            low = +c;
-                                            for (;;) {
-                                                c = s.charAt(l);
-                                                if (c < "0" || c > "9") {
-                                                    break;
-                                                }
-                                                l += 1;
-                                                low = +c + (low * 10);
-                                            }
-                                            high = low;
-                                            if (c === ",") {
-                                                l += 1;
-                                                high = Infinity;
-                                                c = s.charAt(l);
-                                                if (c >= "0" && c <= "9") {
+                                        if (b) {
+                                            switch (s.charAt(l)) {
+                                                case "?":
+                                                case "+":
+                                                case "*":
                                                     l += 1;
-                                                    high = +c;
+                                                    if (s.charAt(l) === "?") {
+                                                        l += 1;
+                                                    }
+                                                    break;
+                                                case "{":
+                                                    l += 1;
+                                                    c = s.charAt(l);
+                                                    if (c < "0" || c > "9") {
+                                                        warningAt(
+                                                            "Expected a number and instead saw '{a}'.", line, from + l, c);
+                                                        break; // No reason to continue checking numbers.
+                                                    }
+                                                    l += 1;
+                                                    low = +c;
                                                     for (;;) {
                                                         c = s.charAt(l);
                                                         if (c < "0" || c > "9") {
                                                             break;
                                                         }
                                                         l += 1;
-                                                        high = +c + (high * 10);
+                                                        low = +c + (low * 10);
                                                     }
-                                                }
-                                            }
-                                            if (s.charAt(l) !== "}") {
-                                                warningAt(
-"Expected '{a}' and instead saw '{b}'.", line, from + l, "}", c);
-                                            } else {
-                                                l += 1;
-                                            }
-                                            if (s.charAt(l) === "?") {
-                                                l += 1;
-                                            }
-                                            if (low > high) {
-                                                warningAt(
-"'{a}' should not be greater than '{b}'.", line, from + l, low, high);
+                                                    high = low;
+                                                    if (c === ",") {
+                                                        l += 1;
+                                                        high = Infinity;
+                                                        c = s.charAt(l);
+                                                        if (c >= "0" && c <= "9") {
+                                                            l += 1;
+                                                            high = +c;
+                                                            for (;;) {
+                                                                c = s.charAt(l);
+                                                                if (c < "0" || c > "9") {
+                                                                    break;
+                                                                }
+                                                                l += 1;
+                                                                high = +c + (high * 10);
+                                                            }
+                                                        }
+                                                    }
+                                                    if (s.charAt(l) !== "}") {
+                                                        warningAt(
+                                                            "Expected '{a}' and instead saw '{b}'.", line, from + l, "}", c);
+                                                    } else {
+                                                        l += 1;
+                                                    }
+                                                    if (s.charAt(l) === "?") {
+                                                        l += 1;
+                                                    }
+                                                    if (low > high) {
+                                                        warningAt(
+                                                            "'{a}' should not be greater than '{b}'.", line, from + l, low, high);
+                                                    }
                                             }
                                         }
                                     }
+                                    c = s.substr(0, l - 1);
+                                    character += l;
+                                    s = s.substr(l);
+                                    return it("(regexp)", c);
                                 }
-                                c = s.substr(0, l - 1);
-                                character += l;
-                                s = s.substr(l);
-                                return it("(regexp)", c);
-                            }
-                            return it("(punctuator)", t);
+                                return it("(punctuator)", t);
 
-    //      punctuator
+                            //      punctuator
 
-                        case "#":
-                            return it("(punctuator)", t);
-                        default:
-                            return it("(punctuator)", t);
+                            case "#":
+                                return it("(punctuator)", t);
+                            default:
+                                return it("(punctuator)", t);
                         }
                     }
                 }
@@ -1898,32 +1895,32 @@ klass:                                  do {
         var b, obj, filter, t, tn, v, minus;
 
         switch (o) {
-        case "*/":
-            error("Unbegun comment.");
-            break;
-        case "/*members":
-        case "/*member":
-            o = "/*members";
-            if (!membersOnly) {
-                membersOnly = {};
-            }
-            obj = membersOnly;
-            option.quotmark = false;
-            break;
-        case "/*jshint":
-        case "/*jslint":
-            obj = option;
-            filter = boolOptions;
-            break;
-        case "/*global":
-            obj = predef;
-            break;
-        default:
-            error("What?");
+            case "*/":
+                error("Unbegun comment.");
+                break;
+            case "/*members":
+            case "/*member":
+                o = "/*members";
+                if (!membersOnly) {
+                    membersOnly = {};
+                }
+                obj = membersOnly;
+                option.quotmark = false;
+                break;
+            case "/*jshint":
+            case "/*jslint":
+                obj = option;
+                filter = boolOptions;
+                break;
+            case "/*global":
+                obj = predef;
+                break;
+            default:
+                error("What?");
         }
 
         t = lex.token();
-loop:   for (;;) {
+        loop:   for (;;) {
             minus = false;
             for (;;) {
                 if (t.type === "special" && t.value === "*/") {
@@ -1988,18 +1985,18 @@ loop:   for (;;) {
                     }
                 } else if (t.value === "quotmark" && (o === "/*jshint")) {
                     switch (v.value) {
-                    case "true":
-                        obj.quotmark = true;
-                        break;
-                    case "false":
-                        obj.quotmark = false;
-                        break;
-                    case "double":
-                    case "single":
-                        obj.quotmark = v.value;
-                        break;
-                    default:
-                        error("Bad option value.", v);
+                        case "true":
+                            obj.quotmark = true;
+                            break;
+                        case "false":
+                            obj.quotmark = false;
+                            break;
+                        case "double":
+                        case "single":
+                            obj.quotmark = v.value;
+                            break;
+                        default:
+                            error("Bad option value.", v);
                     }
                 } else if (v.value === "true" || v.value === "false") {
                     if (o === "/*jslint") {
@@ -2077,21 +2074,21 @@ loop:   for (;;) {
 
     function advance(id, t) {
         switch (token.id) {
-        case "(number)":
-            if (nexttoken.id === ".") {
-                warning("A dot following a number can be confused with a decimal point.", token);
-            }
-            break;
-        case "-":
-            if (nexttoken.id === "-" || nexttoken.id === "--") {
-                warning("Confusing minusses.");
-            }
-            break;
-        case "+":
-            if (nexttoken.id === "+" || nexttoken.id === "++") {
-                warning("Confusing plusses.");
-            }
-            break;
+            case "(number)":
+                if (nexttoken.id === ".") {
+                    warning("A dot following a number can be confused with a decimal point.", token);
+                }
+                break;
+            case "-":
+                if (nexttoken.id === "-" || nexttoken.id === "--") {
+                    warning("Confusing minusses.");
+                }
+                break;
+            case "+":
+                if (nexttoken.id === "+" || nexttoken.id === "++") {
+                    warning("Confusing plusses.");
+                }
+                break;
         }
 
         if (token.type === "(string)" || token.identifier) {
@@ -2104,12 +2101,12 @@ loop:   for (;;) {
                     warning("Unmatched '{a}'.", t, t.id);
                 } else {
                     warning("Expected '{a}' to match '{b}' from line {c} and instead saw '{d}'.",
-                            nexttoken, id, t.id, t.line, nexttoken.value);
+                        nexttoken, id, t.id, t.line, nexttoken.value);
                 }
             } else if (nexttoken.type !== "(identifier)" ||
-                            nexttoken.value !== id) {
+                nexttoken.value !== id) {
                 warning("Expected '{a}' and instead saw '{b}'.",
-                        nexttoken, id, nexttoken.value);
+                    nexttoken, id, nexttoken.value);
             }
         }
 
@@ -2164,12 +2161,12 @@ loop:   for (;;) {
             } else {
                 if (nexttoken.type === "(number)" && token.id === ".") {
                     warning("A leading decimal point can be confused with a dot: '.{a}'.",
-                            token, nexttoken.value);
+                        token, nexttoken.value);
                     advance();
                     return token;
                 } else {
                     error("Expected an identifier and instead saw '{a}'.",
-                            token, token.id);
+                        token, token.id);
                 }
             }
             while (rbp < nexttoken.lbp) {
@@ -2184,7 +2181,7 @@ loop:   for (;;) {
                     // then safely assume that this is not "new Array()" and possibly
                     // not "new Object()"...
                     if (left.value !== "new" ||
-                      (left.first && left.first.value && left.first.value === ".")) {
+                        (left.first && left.first.value && left.first.value === ".")) {
                         isArray = false;
                         // ...In the case of Object, if the left.value and token.value
                         // are not equal, then safely assume that this not "new Object()"
@@ -2252,7 +2249,7 @@ loop:   for (;;) {
             if (left.line === right.line && left.character === right.from) {
                 left.from += (left.character - left.from);
                 warning("Missing space after '{a}'.",
-                        left, left.value);
+                    left, left.value);
             }
         }
     }
@@ -2268,7 +2265,7 @@ loop:   for (;;) {
             if (left.character === right.from) {
                 left.from += (left.character - left.from);
                 warning("Missing space after '{a}'.",
-                        left, left.value);
+                    left, left.value);
             }
         }
     }
@@ -2279,8 +2276,8 @@ loop:   for (;;) {
             i = indent + (bias || 0);
             if (nexttoken.from !== i) {
                 warning(
-"Expected '{a}' to have an indentation at {b} instead at {c}.",
-                        nexttoken, nexttoken.value, i, nexttoken.from);
+                    "Expected '{a}' to have an indentation at {b} instead at {c}.",
+                    nexttoken, nexttoken.value, i, nexttoken.from);
             }
         }
     }
@@ -2366,7 +2363,7 @@ loop:   for (;;) {
                 if (option.plusplus) {
                     warning("Unexpected use of '{a}'.", this, this.id);
                 } else if ((!this.right.identifier || this.right.reserved) &&
-                        this.right.id !== "." && this.right.id !== "[") {
+                    this.right.id !== "." && this.right.id !== "[") {
                     warning("Bad operand.", this);
                 }
             }
@@ -2452,9 +2449,9 @@ loop:   for (;;) {
 
     function isPoorRelation(node) {
         return node &&
-              ((node.type === "(number)" && +node.value === 0) ||
-               (node.type === "(string)" && node.value === "") ||
-               (node.type === "null" && !option.eqnull) ||
+            ((node.type === "(number)" && +node.value === 0) ||
+                (node.type === "(string)" && node.value === "") ||
+                (node.type === "null" && !option.eqnull) ||
                 node.type === "true" ||
                 node.type === "false" ||
                 node.type === "undefined");
@@ -2468,7 +2465,7 @@ loop:   for (;;) {
             that.left = left;
 
             if (predefined[left.value] === false &&
-                    scope[left.value]["(global)"] === true) {
+                scope[left.value]["(global)"] === true) {
                 warning("Read only.", left);
             } else if (left["function"]) {
                 warning("'{a}' is a function.", left, left.value);
@@ -2495,8 +2492,8 @@ loop:   for (;;) {
 
                 if (left === syntax["function"]) {
                     warning(
-"Expected an identifier in an assignment and instead saw a function invocation.",
-                                token);
+                        "Expected an identifier in an assignment and instead saw a function invocation.",
+                        token);
                 }
             }
 
@@ -2530,14 +2527,14 @@ loop:   for (;;) {
             nonadjacent(token, nexttoken);
             if (left) {
                 if (left.id === "." || left.id === "[" ||
-                        (left.identifier && !left.reserved)) {
+                    (left.identifier && !left.reserved)) {
                     expression(19);
                     return that;
                 }
                 if (left === syntax["function"]) {
                     warning(
-"Expected an identifier in an assignment, and instead saw a function invocation.",
-                                token);
+                        "Expected an identifier in an assignment, and instead saw a function invocation.",
+                        token);
                 }
                 return that;
             }
@@ -2552,7 +2549,7 @@ loop:   for (;;) {
             if (option.plusplus) {
                 warning("Unexpected use of '{a}'.", this, this.id);
             } else if ((!left.identifier || left.reserved) &&
-                    left.id !== "." && left.id !== "[") {
+                left.id !== "." && left.id !== "[") {
                 warning("Bad operand.", this);
             }
             this.left = left;
@@ -2573,7 +2570,7 @@ loop:   for (;;) {
                 // help with minification. More info: https://gist.github.com/315916
                 if (!fnparam || token.value !== "undefined") {
                     warning("Expected an identifier and instead saw '{a}' (a reserved word).",
-                            token, token.id);
+                        token, token.id);
                 }
             }
             return token.value;
@@ -2591,7 +2588,7 @@ loop:   for (;;) {
             warning("Missing name in function declaration.");
         } else {
             error("Expected an identifier and instead saw '{a}'.",
-                    nexttoken, nexttoken.value);
+                nexttoken, nexttoken.value);
         }
     }
 
@@ -2612,7 +2609,7 @@ loop:   for (;;) {
                         break;
                     }
                     warning(
-"Inner functions should be listed at the top of the outer function.", t);
+                        "Inner functions should be listed at the top of the outer function.", t);
                     break;
                 }
                 warning("Unreachable '{a}' after '{b}'.", t, t.value, s);
@@ -2685,7 +2682,7 @@ loop:   for (;;) {
                     // the same line *and* option lastsemic is on, ignore the warning.
                     // Otherwise, complain about missing semicolon.
                     if (!option.lastsemic || nexttoken.id !== "}" ||
-                            nexttoken.line !== token.line) {
+                        nexttoken.line !== token.line) {
                         warningAt("Missing semicolon.", token.line, token.character);
                     }
                 }
@@ -2856,11 +2853,11 @@ loop:   for (;;) {
             indent = old_indent;
         } else if (!ordinary) {
             error("Expected '{a}' and instead saw '{b}'.",
-                  nexttoken, "{", nexttoken.value);
+                nexttoken, "{", nexttoken.value);
         } else {
             if (!stmt || option.curly)
                 warning("Expected '{a}' and instead saw '{b}'.",
-                        nexttoken, "{", nexttoken.value);
+                    nexttoken, "{", nexttoken.value);
 
             noreach = true;
             indent += option.indent;
@@ -2941,19 +2938,19 @@ loop:   for (;;) {
             if (funct === s) {
                 // Change 'unused' to 'var', and reject labels.
                 switch (funct[v]) {
-                case "unused":
-                    funct[v] = "var";
-                    break;
-                case "unction":
-                    funct[v] = "function";
-                    this["function"] = true;
-                    break;
-                case "function":
-                    this["function"] = true;
-                    break;
-                case "label":
-                    warning("'{a}' is a statement label.", token, v);
-                    break;
+                    case "unused":
+                        funct[v] = "var";
+                        break;
+                    case "unction":
+                        funct[v] = "function";
+                        this["function"] = true;
+                        break;
+                    case "function":
+                        this["function"] = true;
+                        break;
+                    case "label":
+                        warning("'{a}' is a statement label.", token, v);
+                        break;
                 }
             } else if (funct["(global)"]) {
                 // The name is not defined in the function.  If we are in the global
@@ -2979,62 +2976,62 @@ loop:   for (;;) {
                 // function, but not as outer, then there is a scope error.
 
                 switch (funct[v]) {
-                case "closure":
-                case "function":
-                case "var":
-                case "unused":
-                    warning("'{a}' used out of scope.", token, v);
-                    break;
-                case "label":
-                    warning("'{a}' is a statement label.", token, v);
-                    break;
-                case "outer":
-                case "global":
-                    break;
-                default:
-                    // If the name is defined in an outer function, make an outer entry,
-                    // and if it was unused, make it var.
-                    if (s === true) {
-                        funct[v] = true;
-                    } else if (s === null) {
-                        warning("'{a}' is not allowed.", token, v);
-                        note_implied(token);
-                    } else if (typeof s !== "object") {
-                        // Operators typeof and delete do not raise runtime errors even
-                        // if the base object of a reference is null so no need to
-                        // display warning if we're inside of typeof or delete.
-                        if (option.undef) {
-                            // Attempting to subscript a null reference will throw an
-                            // error, even within the typeof and delete operators
-                            if (!(anonname === "typeof" || anonname === "delete") ||
-                                (nexttoken &&
-                                    (nexttoken.value === "." || nexttoken.value === "["))) {
+                    case "closure":
+                    case "function":
+                    case "var":
+                    case "unused":
+                        warning("'{a}' used out of scope.", token, v);
+                        break;
+                    case "label":
+                        warning("'{a}' is a statement label.", token, v);
+                        break;
+                    case "outer":
+                    case "global":
+                        break;
+                    default:
+                        // If the name is defined in an outer function, make an outer entry,
+                        // and if it was unused, make it var.
+                        if (s === true) {
+                            funct[v] = true;
+                        } else if (s === null) {
+                            warning("'{a}' is not allowed.", token, v);
+                            note_implied(token);
+                        } else if (typeof s !== "object") {
+                            // Operators typeof and delete do not raise runtime errors even
+                            // if the base object of a reference is null so no need to
+                            // display warning if we're inside of typeof or delete.
+                            if (option.undef) {
+                                // Attempting to subscript a null reference will throw an
+                                // error, even within the typeof and delete operators
+                                if (!(anonname === "typeof" || anonname === "delete") ||
+                                    (nexttoken &&
+                                        (nexttoken.value === "." || nexttoken.value === "["))) {
 
-                                isundef(funct, "'{a}' is not defined.", token, v);
+                                    isundef(funct, "'{a}' is not defined.", token, v);
+                                }
+                            }
+                            funct[v] = true;
+                            note_implied(token);
+                        } else {
+                            switch (s[v]) {
+                                case "function":
+                                case "unction":
+                                    this["function"] = true;
+                                    s[v] = "closure";
+                                    funct[v] = s["(global)"] ? "global" : "outer";
+                                    break;
+                                case "var":
+                                case "unused":
+                                    s[v] = "closure";
+                                    funct[v] = s["(global)"] ? "global" : "outer";
+                                    break;
+                                case "closure":
+                                    funct[v] = s["(global)"] ? "global" : "outer";
+                                    break;
+                                case "label":
+                                    warning("'{a}' is a statement label.", token, v);
                             }
                         }
-                        funct[v] = true;
-                        note_implied(token);
-                    } else {
-                        switch (s[v]) {
-                        case "function":
-                        case "unction":
-                            this["function"] = true;
-                            s[v] = "closure";
-                            funct[v] = s["(global)"] ? "global" : "outer";
-                            break;
-                        case "var":
-                        case "unused":
-                            s[v] = "closure";
-                            funct[v] = s["(global)"] ? "global" : "outer";
-                            break;
-                        case "closure":
-                            funct[v] = s["(global)"] ? "global" : "outer";
-                            break;
-                        case "label":
-                            warning("'{a}' is a statement label.", token, v);
-                        }
-                    }
                 }
             }
             return this;
@@ -3086,7 +3083,7 @@ loop:   for (;;) {
     reservevar("null");
     reservevar("this", function (x) {
         if (directive["use strict"] && !option.validthis && ((funct["(statement)"] &&
-                funct["(name)"].charAt(0) > "Z") || funct["(global)"])) {
+            funct["(name)"].charAt(0) > "Z") || funct["(global)"])) {
             warning("Possible strict violation.", x);
         }
     });
@@ -3134,17 +3131,17 @@ loop:   for (;;) {
     relation("===");
     relation("!=", function (left, right) {
         var eqnull = option.eqnull &&
-                (left.value === "null" || right.value === "null");
+            (left.value === "null" || right.value === "null");
 
         if (!eqnull && option.eqeqeq) {
             warning("Expected '{a}' and instead saw '{b}'.",
-                    this, "!==", "!=");
+                this, "!==", "!=");
         } else if (isPoorRelation(left)) {
             warning("Use '{a}' to compare with '{b}'.",
-                    this, "!==", left.value);
+                this, "!==", left.value);
         } else if (isPoorRelation(right)) {
             warning("Use '{a}' to compare with '{b}'.",
-                    this, "!==", right.value);
+                this, "!==", right.value);
         }
         return this;
     });
@@ -3242,29 +3239,29 @@ loop:   for (;;) {
             if (c.identifier) {
                 c["new"] = true;
                 switch (c.value) {
-                case "Number":
-                case "String":
-                case "Boolean":
-                case "Math":
-                case "JSON":
-                    warning("Do not use {a} as a constructor.", prevtoken, c.value);
-                    break;
-                case "Function":
-                    if (!option.evil) {
-                        warning("The Function constructor is eval.");
-                    }
-                    break;
-                case "Date":
-                case "RegExp":
-                    break;
-                default:
-                    if (c.id !== "function") {
-                        i = c.value.substr(0, 1);
-                        if (option.newcap && (i < "A" || i > "Z") && !is_own(global, c.value)) {
-                            warning("A constructor name should start with an uppercase letter.",
-                                token);
+                    case "Number":
+                    case "String":
+                    case "Boolean":
+                    case "Math":
+                    case "JSON":
+                        warning("Do not use {a} as a constructor.", prevtoken, c.value);
+                        break;
+                    case "Function":
+                        if (!option.evil) {
+                            warning("The Function constructor is eval.");
                         }
-                    }
+                        break;
+                    case "Date":
+                    case "RegExp":
+                        break;
+                    default:
+                        if (c.id !== "function") {
+                            i = c.value.substr(0, 1);
+                            if (option.newcap && (i < "A" || i > "Z") && !is_own(global, c.value)) {
+                                warning("A constructor name should start with an uppercase letter.",
+                                    token);
+                            }
+                        }
                 }
             } else {
                 if (c.id !== "." && c.id !== "[" && c.id !== "(") {
@@ -3302,7 +3299,7 @@ loop:   for (;;) {
             else if (directive["use strict"])
                 error("Strict violation.");
         } else if (!option.evil && left && left.value === "document" &&
-                (m === "write" || m === "writeln")) {
+            (m === "write" || m === "writeln")) {
             warning("document.write can be a form of eval.", left);
         }
         if (!option.evil && (m === "eval" || m === "execScript")) {
@@ -3354,33 +3351,33 @@ loop:   for (;;) {
             }
             if (!option.evil) {
                 if (left.value === "eval" || left.value === "Function" ||
-                        left.value === "execScript") {
+                    left.value === "execScript") {
                     warning("eval is evil.", left);
 
                     if (p[0] && [0].id === "(string)") {
                         addInternalSrc(left, p[0].value);
                     }
                 } else if (p[0] && p[0].id === "(string)" &&
-                       (left.value === "setTimeout" ||
+                    (left.value === "setTimeout" ||
                         left.value === "setInterval")) {
                     warning(
-    "Implied eval is evil. Pass a function instead of a string.", left);
+                        "Implied eval is evil. Pass a function instead of a string.", left);
                     addInternalSrc(left, p[0].value);
 
-                // window.setTimeout/setInterval
+                    // window.setTimeout/setInterval
                 } else if (p[0] && p[0].id === "(string)" &&
-                       left.value === "." &&
-                       left.left.value === "window" &&
-                       (left.right === "setTimeout" ||
+                    left.value === "." &&
+                    left.left.value === "window" &&
+                    (left.right === "setTimeout" ||
                         left.right === "setInterval")) {
                     warning(
-    "Implied eval is evil. Pass a function instead of a string.", left);
+                        "Implied eval is evil. Pass a function instead of a string.", left);
                     addInternalSrc(left, p[0].value);
                 }
             }
             if (!left.identifier && left.id !== "." && left.id !== "[" &&
-                    left.id !== "(" && left.id !== "&&" && left.id !== "||" &&
-                    left.id !== "?") {
+                left.id !== "(" && left.id !== "&&" && left.id !== "||" &&
+                left.id !== "?") {
                 warning("Bad invocation.", left);
             }
         }
@@ -3398,10 +3395,10 @@ loop:   for (;;) {
         nospace(prevtoken, token);
         if (option.immed && v.id === "function") {
             if (nexttoken.id !== "(" &&
-              (nexttoken.id !== "." || (peek().value !== "call" && peek().value !== "apply"))) {
+                (nexttoken.id !== "." || (peek().value !== "call" && peek().value !== "apply"))) {
                 warning(
-"Do not wrap function literals in parens unless they are to be immediately invoked.",
-                        this);
+                    "Do not wrap function literals in parens unless they are to be immediately invoked.",
+                    this);
             }
         }
 
@@ -3421,7 +3418,7 @@ loop:   for (;;) {
                 s = syntax[e.value];
                 if (!s || !s.reserved) {
                     warning("['{a}'] is better written in dot notation.",
-                            prevtoken, e.value);
+                        prevtoken, e.value);
                 }
             }
         }
@@ -3768,7 +3765,7 @@ loop:   for (;;) {
 
                 if (nexttoken.id !== "=") {
                     warning("const " +
-                      "'{a}' is initialized to 'undefined'.", token, id);
+                        "'{a}' is initialized to 'undefined'.", token, id);
                 }
 
                 if (nexttoken.id === "=") {
@@ -3777,11 +3774,11 @@ loop:   for (;;) {
                     nonadjacent(token, nexttoken);
                     if (nexttoken.id === "undefined") {
                         warning("It is not necessary to initialize " +
-                          "'{a}' to 'undefined'.", token, id);
+                            "'{a}' to 'undefined'.", token, id);
                     }
                     if (peek(0).id === "=" && nexttoken.identifier) {
                         error("Constant {a} was not declared correctly.",
-                                nexttoken, nexttoken.value);
+                            nexttoken, nexttoken.value);
                     }
                     value = expression(0);
                     name.first = value;
@@ -3840,7 +3837,7 @@ loop:   for (;;) {
                 }
                 if (peek(0).id === "=" && nexttoken.identifier) {
                     error("Variable {a} was not declared correctly.",
-                            nexttoken, nexttoken.value);
+                        nexttoken, nexttoken.value);
                 }
                 value = expression(0);
                 name.first = value;
@@ -3871,7 +3868,7 @@ loop:   for (;;) {
         doFunction(i, { statement: true });
         if (nexttoken.id === "(" && nexttoken.line === token.line) {
             error(
-"Function declarations are not invocable. Wrap the whole function invocation in parens.");
+                "Function declarations are not invocable. Wrap the whole function invocation in parens.");
         }
         return this;
     });
@@ -3984,7 +3981,7 @@ loop:   for (;;) {
             return;
         } else if (!b) {
             error("Expected '{a}' and instead saw '{b}'.",
-                    nexttoken, "catch", nexttoken.value);
+                nexttoken, "catch", nexttoken.value);
         }
 
         return this;
@@ -4050,92 +4047,92 @@ loop:   for (;;) {
         this.cases = [];
         for (;;) {
             switch (nexttoken.id) {
-            case "case":
-                switch (funct["(verb)"]) {
-                case "break":
                 case "case":
-                case "continue":
-                case "return":
-                case "switch":
-                case "throw":
-                    break;
-                default:
-                    // You can tell JSHint that you don't use break intentionally by
-                    // adding a comment /* falls through */ on a line just before
-                    // the next `case`.
-                    if (!ft.test(lines[nexttoken.line - 2])) {
-                        warning(
-                            "Expected a 'break' statement before 'case'.",
-                            token);
+                    switch (funct["(verb)"]) {
+                        case "break":
+                        case "case":
+                        case "continue":
+                        case "return":
+                        case "switch":
+                        case "throw":
+                            break;
+                        default:
+                            // You can tell JSHint that you don't use break intentionally by
+                            // adding a comment /* falls through */ on a line just before
+                            // the next `case`.
+                            if (!ft.test(lines[nexttoken.line - 2])) {
+                                warning(
+                                    "Expected a 'break' statement before 'case'.",
+                                    token);
+                            }
                     }
-                }
-                indentation(-option.indent);
-                advance("case");
-                this.cases.push(expression(20));
-                increaseComplexityCount();
-                g = true;
-                advance(":");
-                funct["(verb)"] = "case";
-                break;
-            case "default":
-                switch (funct["(verb)"]) {
-                case "break":
-                case "continue":
-                case "return":
-                case "throw":
+                    indentation(-option.indent);
+                    advance("case");
+                    this.cases.push(expression(20));
+                    increaseComplexityCount();
+                    g = true;
+                    advance(":");
+                    funct["(verb)"] = "case";
                     break;
-                default:
-                    if (!ft.test(lines[nexttoken.line - 2])) {
-                        warning(
-                            "Expected a 'break' statement before 'default'.",
-                            token);
+                case "default":
+                    switch (funct["(verb)"]) {
+                        case "break":
+                        case "continue":
+                        case "return":
+                        case "throw":
+                            break;
+                        default:
+                            if (!ft.test(lines[nexttoken.line - 2])) {
+                                warning(
+                                    "Expected a 'break' statement before 'default'.",
+                                    token);
+                            }
                     }
-                }
-                indentation(-option.indent);
-                advance("default");
-                g = true;
-                advance(":");
-                break;
-            case "}":
-                indent -= option.indent;
-                indentation();
-                advance("}", t);
-                if (this.cases.length === 1 || this.condition.id === "true" ||
+                    indentation(-option.indent);
+                    advance("default");
+                    g = true;
+                    advance(":");
+                    break;
+                case "}":
+                    indent -= option.indent;
+                    indentation();
+                    advance("}", t);
+                    if (this.cases.length === 1 || this.condition.id === "true" ||
                         this.condition.id === "false") {
-                    if (!option.onecase)
-                        warning("This 'switch' should be an 'if'.", this);
-                }
-                funct["(breakage)"] -= 1;
-                funct["(verb)"] = undefined;
-                return;
-            case "(end)":
-                error("Missing '{a}'.", nexttoken, "}");
-                return;
-            default:
-                if (g) {
-                    switch (token.id) {
-                    case ",":
-                        error("Each value should have its own case label.");
-                        return;
-                    case ":":
-                        g = false;
-                        statements();
-                        break;
-                    default:
-                        error("Missing ':' on a case clause.", token);
-                        return;
+                        if (!option.onecase)
+                            warning("This 'switch' should be an 'if'.", this);
                     }
-                } else {
-                    if (token.id === ":") {
-                        advance(":");
-                        error("Unexpected '{a}'.", token, ":");
-                        statements();
+                    funct["(breakage)"] -= 1;
+                    funct["(verb)"] = undefined;
+                    return;
+                case "(end)":
+                    error("Missing '{a}'.", nexttoken, "}");
+                    return;
+                default:
+                    if (g) {
+                        switch (token.id) {
+                            case ",":
+                                error("Each value should have its own case label.");
+                                return;
+                            case ":":
+                                g = false;
+                                statements();
+                                break;
+                            default:
+                                error("Missing ':' on a case clause.", token);
+                                return;
+                        }
                     } else {
-                        error("Expected '{a}' and instead saw '{b}'.",
-                            nexttoken, "case", nexttoken.value);
-                        return;
+                        if (token.id === ":") {
+                            advance(":");
+                            error("Unexpected '{a}'.", token, ":");
+                            statements();
+                        } else {
+                            error("Expected '{a}' and instead saw '{b}'.",
+                                nexttoken, "case", nexttoken.value);
+                            return;
+                        }
                     }
-                }
             }
         }
     }).labelled = true;
@@ -4190,13 +4187,13 @@ loop:   for (;;) {
                 varstatement.fud.call(varstatement, true);
             } else {
                 switch (funct[nexttoken.value]) {
-                case "unused":
-                    funct[nexttoken.value] = "var";
-                    break;
-                case "var":
-                    break;
-                default:
-                    warning("Bad for in variable '{a}'.",
+                    case "unused":
+                        funct[nexttoken.value] = "var";
+                        break;
+                    case "var":
+                        break;
+                    default:
+                        warning("Bad for in variable '{a}'.",
                             nexttoken, nexttoken.value);
                 }
                 advance();
@@ -4206,9 +4203,9 @@ loop:   for (;;) {
             advance(")", t);
             s = block(true, true);
             if (option.forin && s && (s.length > 1 || typeof s[0] !== "object" ||
-                    s[0].value !== "if")) {
+                s[0].value !== "if")) {
                 warning("The body of a for in should be wrapped in an if statement to filter " +
-                        "unwanted properties from the prototype.", this);
+                    "unwanted properties from the prototype.", this);
             }
             funct["(breakage)"] -= 1;
             funct["(loopage)"] -= 1;
@@ -4243,7 +4240,7 @@ loop:   for (;;) {
             advance(";");
             if (nexttoken.id === ";") {
                 error("Expected '{a}' and instead saw '{b}'.",
-                        nexttoken, ")", ";");
+                    nexttoken, ")", ";");
             }
             if (nexttoken.id !== ")") {
                 for (;;) {
@@ -4325,7 +4322,7 @@ loop:   for (;;) {
                 nonadjacent(token, nexttoken);
                 if (peek().value === "=" && !option.boss) {
                     warningAt("Did you mean to return a conditional instead of an assignment?",
-                              token.line, token.character + 1);
+                        token.line, token.character + 1);
                 }
                 this.first = expression(0);
             }
@@ -4377,7 +4374,7 @@ loop:   for (;;) {
                 for (;;) {
                     if (nexttoken.id === "(end)") {
                         error("Missing '}' to match '{' from line {a}.",
-                                nexttoken, t.line);
+                            nexttoken, t.line);
                     } else if (nexttoken.id === "}") {
                         warning("Unexpected comma.", token);
                         break;
@@ -4385,11 +4382,11 @@ loop:   for (;;) {
                         error("Unexpected comma.", nexttoken);
                     } else if (nexttoken.id !== "(string)") {
                         warning("Expected a string and instead saw {a}.",
-                                nexttoken, nexttoken.value);
+                            nexttoken, nexttoken.value);
                     }
                     if (o[nexttoken.value] === true) {
                         warning("Duplicate key '{a}'.",
-                                nexttoken, nexttoken.value);
+                            nexttoken, nexttoken.value);
                     } else if ((nexttoken.value === "__proto__" &&
                         !option.proto) || (nexttoken.value === "__iterator__" &&
                         !option.iterator)) {
@@ -4417,7 +4414,7 @@ loop:   for (;;) {
                 for (;;) {
                     if (nexttoken.id === "(end)") {
                         error("Missing ']' to match '[' from line {a}.",
-                                nexttoken, t.line);
+                            nexttoken, t.line);
                     } else if (nexttoken.id === "]") {
                         warning("Unexpected comma.", token);
                         break;
@@ -4435,29 +4432,29 @@ loop:   for (;;) {
         }
 
         switch (nexttoken.id) {
-        case "{":
-            jsonObject();
-            break;
-        case "[":
-            jsonArray();
-            break;
-        case "true":
-        case "false":
-        case "null":
-        case "(number)":
-        case "(string)":
-            advance();
-            break;
-        case "-":
-            advance("-");
-            if (token.character !== nexttoken.from) {
-                warning("Unexpected space after '-'.", token);
-            }
-            adjacent(token, nexttoken);
-            advance("(number)");
-            break;
-        default:
-            error("Expected a JSON value.", nexttoken);
+            case "{":
+                jsonObject();
+                break;
+            case "[":
+                jsonArray();
+                break;
+            case "true":
+            case "false":
+            case "null":
+            case "(number)":
+            case "(string)":
+                advance();
+                break;
+            case "-":
+                advance("-");
+                if (token.character !== nexttoken.from) {
+                    warning("Unexpected space after '-'.", token);
+                }
+                adjacent(token, nexttoken);
+                advance("(number)");
+                break;
+            default:
+                error("Expected a JSON value.", nexttoken);
         }
     }
 
@@ -4586,19 +4583,19 @@ loop:   for (;;) {
         try {
             advance();
             switch (nexttoken.id) {
-            case "{":
-            case "[":
-                option.laxbreak = true;
-                jsonmode = true;
-                jsonValue();
-                break;
-            default:
-                directives();
-                if (directive["use strict"] && !option.globalstrict) {
-                    warning("Use the function form of \"use strict\".", prevtoken);
-                }
+                case "{":
+                case "[":
+                    option.laxbreak = true;
+                    jsonmode = true;
+                    jsonValue();
+                    break;
+                default:
+                    directives();
+                    if (directive["use strict"] && !option.globalstrict) {
+                        warning("Use the function form of \"use strict\".", prevtoken);
+                    }
 
-                statements();
+                    statements();
             }
             advance((nexttoken && nexttoken.value !== ".")  ? "(end)" : undefined);
 
