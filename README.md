@@ -2,7 +2,7 @@
 
 Easily automate JSHint (http://www.jshint.com/) validation on your Javascript code base with Apache Ant.
 
-To get started [download](https://github.com/philmander/ant-jshint/downloads) the ant-jshint jar file and include the following code in your Ant build file.
+To get started [download](https://github.com/philmander/ant-jshint/tree/master/release) the ant-jshint jar file and include the following code in your Ant build file.
 
 ```xml
 <!-- Define the task -->
@@ -32,6 +32,9 @@ fail        | Instructs the task to fail the build if any jshint errors are foun
 jshintSrc   | The task is packaged with jshint embedded, but an alternative jshint src file can be specified here | no
 
 The task is an implicit fileset. See http://ant.apache.org/manual/Types/fileset.html for more parameters used for file matching or see the usage examples below.
+
+If a <code>.jshintrc</code> file is present in the base directory of the project and no optionsFile attribute is specified, this will automatically be loaded 
+as the optionsFile (interpreted as JSON)
 
 ###Nested elements
 
