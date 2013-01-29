@@ -30,12 +30,13 @@ public class PlainJsHintReporter implements JsHintReporter {
 		if (report.getTotalErrors() > 0) {
 			output.append("----------------------------------------------------------------------\n");
 			for(JsHintResult result : report.getResults()) { 
-				output.append("\n");
-				output.append(getFileFailureMessage((result.getFile()) + "\n"));
-				for(JsHintError error : result.getErrors()) {
-					output.append(getIssueMessage(error.getReason(), error.getEvidence(), error.getLine(), error.getCharacter()) + "\n");
+				if(result.getNumErrors() > 0) {
+					output.append("\n");
+					output.append(getFileFailureMessage((result.getFile()) + "\n"));
+					for(JsHintError error : result.getErrors()) {
+						output.append(getIssueMessage(error.getReason(), error.getEvidence(), error.getLine(), error.getCharacter()) + "\n");
+					}
 				}
-				
 			}
 			output.append("----------------------------------------------------------------------\n");
 		}
