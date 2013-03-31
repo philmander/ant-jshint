@@ -33,8 +33,6 @@ public class JsHintRunner {
 	
 	private static final String JSHINT_RUNNER_LOC = "/com/philmander/jshint/jshint-runner.js";
 
-    private static final String ENVJS_LOC = "/com/philmander/jshint/env.js";
-
 	private JsHintLogger logger = null;
 
 	private String jshintSrc = null;
@@ -147,15 +145,10 @@ public class JsHintRunner {
 		// start rhino
 		Context ctx = Context.enter();
 		ctx.setLanguageVersion(Context.VERSION_1_7);
-        ctx.setOptimizationLevel(-1);
 		ScriptableObject global = ctx.initStandardObjects();
 
 		String[] names = { "print" };
 		global.defineFunctionProperties(names, JsHintRunner.class, ScriptableObject.DONTENUM);
-
-        //load env js
-        InputStream runEnvIn = this.getClass().getResourceAsStream(ENVJS_LOC);
-        JSSourceFile runEnv = JSSourceFile.fromInputStream(ENVJS_LOC, runEnvIn);
 
 		// get js hint source from classpath or user file
 		InputStream jsHintIn = jshintSrc != null ? new FileInputStream(new File(jshintSrc)) : this.getClass()
@@ -167,7 +160,7 @@ public class JsHintRunner {
 		JSSourceFile runJsHint = JSSourceFile.fromInputStream(JSHINT_RUNNER_LOC, runJsHintIn);
 
 		// load jshint
-        ctx.evaluateReader(global, runEnv.getCodeReader(), runEnv.getName(), 0, null);
+        //ctx.evaluateReader(global, runEnv.getCodeReader(), runEnv.getName(), 0, null);
 		ctx.evaluateReader(global, jsHintSrc.getCodeReader(), jsHintSrc.getName(), 0, null);
 
 		// define properties to store current js source info

@@ -1,3 +1,11 @@
+if(typeof this.console === "undefined") {
+    this.console = {};
+    this.console.log = function() {};
+    this.console.warn = function() {};
+    this.console.error = function() {};
+    this.console.trace = function() {};
+}
+
 //these global vars are predefined before this file is loaded
 this.currentFile = this.currentFile || "No file";
 this.currentCode = this.currentCode || null;
