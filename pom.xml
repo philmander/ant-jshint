@@ -74,6 +74,7 @@
 	</dependencies>
 
 	<build>
+        <finalName>${artifactId}-${project.version}</finalName>
 		<plugins>
 
 			<plugin>
@@ -108,7 +109,7 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<finalName>${artifactId}-${project.version}-deps</finalName>
+					<finalName>${build.finalName}-deps</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -124,6 +125,24 @@
 					</execution>
 				</executions>
 			</plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo>Moving jars to release dir</echo>
+                                <copy file="target/${build.finalName}-deps.jar" todir="${basedir}/release"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
