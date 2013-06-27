@@ -39,8 +39,6 @@ public class JsHintRunner {
 
 	/**
 	 * Basic, intital CLI implementation
-	 * 
-	 * @param args
 	 */
 	public static void main(String[] args) {
 
@@ -59,11 +57,13 @@ public class JsHintRunner {
 
 			JsHintLogger logger = new JsHintLogger() {
 
-				public void log(String msg) {
+				@Override
+            public void log(String msg) {
 					System.out.println("[jshint] " + msg);
 				}
 
-				public void error(String msg) {
+				@Override
+            public void error(String msg) {
 					System.err.println("[jshint] " + msg);
 				}
 			};
@@ -136,7 +136,6 @@ public class JsHintRunner {
 	 * @param options
 	 *            A map of jshint options to apply
 	 * @return A JSHintReport object containing the full results data
-	 * @throws IOException
 	 */
 	public JsHintReport lint(String[] files, Properties options, Properties undefs) throws IOException {
 

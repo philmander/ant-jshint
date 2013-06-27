@@ -237,8 +237,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * The directory to scan for files to validate. Use includes to only
 	 * validate js files and excludes to omit files such as compressed js
 	 * libraries from js validation
-	 * 
-	 * @param dir
 	 */
 	public void setDir(File dir) {
 		this.dir = dir;
@@ -247,8 +245,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	/**
 	 * By default the ant task will fail the build if jshint finds any errors.
 	 * Set this to false for reporting purposes
-	 * 
-	 * @param fail
 	 */
 	public void setFail(boolean fail) {
 		this.fail = fail;
@@ -268,8 +264,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * Specify jshint options as a commas delimited list i.e. asi=true,
 	 * evil=false. These options override any options specified using the
 	 * optionsFile attribute
-	 * 
-	 * @param options
 	 */
 	public void setOptions(String options) {
 		this.options = options;
@@ -289,7 +283,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	
 	/**
 	 * A comma separated list of global variables to use when linting all files
-	 * @param globals
 	 */
 	public void setGlobals(String globals) {
 		this.globals = globals;
@@ -306,9 +299,10 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	}
 
 	/**
-	 * Ant error logging
+	 * Ant error logging.
 	 */
-	public void error(String msg) {
+	@Override
+   public void error(String msg) {
 		log(msg, LogLevel.ERR.getLevel());
 	}
 }
