@@ -123,7 +123,26 @@
                     </execution>
                 </executions>
             </plugin>
-            
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <finalName>${build.finalName}-deps</finalName>
+                    <descriptors>
+                        <descriptor>src/main/assembly/descriptor.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+                    
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -136,6 +155,7 @@
                             <tasks>
                                 <echo>Moving jars to release dir</echo>
                                 <copy file="target/${build.finalName}-deps.jar" todir="${basedir}/release"/>
+                                <copy file="target/${build.finalName}-deps-bin.zip" todir="${basedir}/release"/>
                             </tasks>
                         </configuration>
                     </execution>

@@ -17,6 +17,20 @@ To get started [download](https://github.com/philmander/ant-jshint/tree/master/r
 </target>
 ```
 
+There is also a zip containing all the jars. To use them, unpack the zip and include the following code in your Ant build file.
+
+```xml
+<!-- Define the task -->
+<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask">
+    <classpath>
+        <fileset dir="${basedir}/jshint" excludes="lib/closure*.jar" />
+        <!-- make closure-compiler last in classpath -->
+        <fileset dir="${basedir}/jshint" includes="lib/closure*.jar" />
+    </classpath>
+</taskdef>
+    
+```
+
 ##Parameters
 
 ###Task attributes

@@ -1,0 +1,25 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>bin</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <!-- ant-jshint's own code -->
+            <outputDirectory>.</outputDirectory>
+            <scope>runtime</scope>
+            <includes>
+                <include>${project.groupId}:*</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <!-- all other dependencies -->
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>${project.groupId}:*</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+</assembly>
