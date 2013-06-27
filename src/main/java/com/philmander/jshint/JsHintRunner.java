@@ -225,7 +225,7 @@ public class JsHintRunner {
 				Scriptable errorDetail = (Scriptable) errors.get(i, global);
 
 				try {
-					String reason = (String) errorDetail.get("reason", global);
+					String reason = errorDetail.get("reason", global).toString();
 					int line = ((Number) errorDetail.get("line", global)).intValue();
 					int character = ((Number) errorDetail.get("character", global)).intValue();
 					String evidence = ((String) errorDetail.get("evidence", global)).replace(
@@ -244,7 +244,7 @@ public class JsHintRunner {
 						logger.error(("Problem casting JShint error variable for previous error. See issue (#1) ("
 								+ e.getMessage() + ")"));
 					} else {
-						throw new RuntimeException(e);
+						throw e;
 					}
 				}
 			}
