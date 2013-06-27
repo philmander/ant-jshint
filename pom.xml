@@ -93,26 +93,6 @@
 			</plugin>
 
             <plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2</version>
-				<configuration>
-					<finalName>ant-jshint-test</finalName>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>single</id>
-                        <phase>generate-test-resources</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.4</version>

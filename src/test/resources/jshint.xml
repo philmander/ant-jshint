@@ -18,15 +18,7 @@
 	</target>
 
 	<target name="makeTask" depends="clean">
-
-		<path id="jshint.classpath">
-			<fileset dir="${test.resources.dir}/../../../target"
-				includes="ant-jshint-test-jar-with-dependencies.jar" />
-		</path>
-
-		<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask">
-			<classpath refid="jshint.classpath" />
-		</taskdef>
+		<taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask" />
 	</target>
 
 	<target name="testIncludes" depends="makeTask">
