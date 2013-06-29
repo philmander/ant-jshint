@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -137,7 +138,7 @@ public class JsHintRunner {
 	 *            A map of jshint options to apply
 	 * @return A JSHintReport object containing the full results data
 	 */
-	public JsHintReport lint(String[] files, Properties options, Properties undefs) throws IOException {
+	public JsHintReport lint(String[] files, Map<Object, Object> options, Map<Object, Object> undefs) throws IOException {
 
 		JsHintReport report = new JsHintReport(files.length);
 
@@ -181,7 +182,7 @@ public class JsHintRunner {
 		// jshint globals
 		ScriptableObject jsHintGlobals = (ScriptableObject) ctx.newObject(global);
 		for (Object key : undefs.keySet()) {
-			boolean globalValue = Boolean.valueOf((String) undefs.get(key));			
+			boolean globalValue = Boolean.valueOf(undefs.get(key).toString());			
 			jsHintGlobals.put((String) key, jsHintGlobals, globalValue);
 		}
 		global.defineProperty("jsHintGlobals", jsHintGlobals, ScriptableObject.DONTENUM);

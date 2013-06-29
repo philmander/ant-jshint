@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.LogLevel;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -109,27 +110,30 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 		}
 	}
 	
-	private Properties loadOptions() {
+	private Map<Object, Object> loadOptions() {
 
         if(optionsFile == null) {
             //default to use jshint rc
             optionsFile = getProject().getBaseDir() + "/" + JSHINTRC_FILE;
         }
 
-		Properties props = loadProperties(options, optionsFile);
-		logProperties("custom options", props);
+      Map<Object, Object> props = loadProperties(options, optionsFile);
+		if (props.size() > 0) {
+		   logProperties("custom options", props);
+      }
 
 		return props;
 	}
 	
-	private Properties loadGlobals() {
-		Properties props = loadProperties(globals, globalsFile);
-		logProperties("custom options", props);
-
+	private Map<Object, Object> loadGlobals() {
+	   Map<Object, Object> props = loadProperties(globals, globalsFile);
+      if (props.size() > 0) {
+         logProperties("custom globals", props);
+      }
 		return props;
 	}
 	
-	private Properties loadProperties(String propertiesList, String propertiesFilePath) {
+	private Map<Object, Object> loadProperties(String propertiesList, String propertiesFilePath) {
 		Properties props = new Properties();
 				
 		if (propertiesFilePath != null) {			
@@ -140,8 +144,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 				if (propertiesFile.exists()) {
 					if(propertiesFilePath.endsWith(".json") || propertiesFilePath.endsWith(JSHINTRC_FILE)) {
 						ObjectMapper mapper = new ObjectMapper();
-						@SuppressWarnings("unchecked")
-						Map<String, String> jsonProps = mapper.readValue(propertiesFile, Map.class);
+						Map<?,?> jsonProps = mapper.readValue(propertiesFile, Map.class);
 						props.putAll(jsonProps);
 					} else {							
 						FileInputStream inStream = new FileInputStream(propertiesFile);
@@ -151,9 +154,9 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 					throw new FileNotFoundException("Could not find properties file at " + propertiesFile.getAbsolutePath());
 				}
 			} catch (FileNotFoundException e) {
-				log(e.getMessage());
+				log(e.getMessage(), Project.MSG_ERR);
 			} catch (IOException e) {
-				log("Could not load properties file");
+            log("Could not load properties file: " + e.getMessage(), Project.MSG_ERR);
 			}
 		}
 	
@@ -168,11 +171,11 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 		return props;
 	}
 	
-	private void logProperties(String attrName, Properties props) {
+   private void logProperties(String attrName, Map<Object, Object> props) {
 		// log combined properties
 		StringBuilder propsBuilder = new StringBuilder();
 		for (Object propName : props.keySet()) {
-			boolean val = Boolean.valueOf(props.getProperty((String) propName));
+		   Object val = props.get(propName);
 			propsBuilder.append(propName + "=" + val + ",");
 		}
 		if (props.size() > 0) {

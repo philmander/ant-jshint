@@ -60,7 +60,6 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
 
     @Test
-    @Ignore
     public void testTask_optionsJshintrcFile() {
 
         File path = this.getProject().getBaseDir();
