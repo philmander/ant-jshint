@@ -91,7 +91,7 @@ public class JsHintRunner {
 			JsHintReport report = runner.lint(files.toArray(new String[files.size()]), optionsProps, globalsProps);
 
 			if (report.getTotalErrors() > 0) {
-				logger.log(PlainJsHintReporter.getFailureMessage(report.getTotalErrors()));
+				logger.error(PlainJsHintReporter.getFailureMessage(report.getTotalErrors()));
 			} else {
 				logger.log(PlainJsHintReporter.getSuccessMessage(report.getNumFiles()));
 			}
@@ -217,7 +217,7 @@ public class JsHintRunner {
 
 			if (numErrors > 0) {
 				if (logger != null) {
-					logger.log(PlainJsHintReporter.getFileFailureMessage(jsFileName));
+					logger.error(PlainJsHintReporter.getFileFailureMessage(jsFileName));
 				}
 			}
 			for (int i = 0; i < numErrors; i++) {
