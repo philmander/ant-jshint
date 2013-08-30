@@ -24,13 +24,13 @@ import com.philmander.jshint.report.PlainJsHintReporter;
 
 /**`
  * Standalone class for running jshint
- * 
+ *
  * @author Phil Mander
  */
 public class JsHintRunner {
-	
+
 	private static final String JSHINT_LOC = "/com/philmander/jshint/jshint.js";
-	
+
 	private static final String JSHINT_RUNNER_LOC = "/com/philmander/jshint/jshint-runner.js";
 
 	private JsHintLogger logger = null;
@@ -39,7 +39,7 @@ public class JsHintRunner {
 
 	/**
 	 * Basic, intital CLI implementation
-	 * 
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -105,7 +105,7 @@ public class JsHintRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	} 
+	}
 
 	/**
 	 * Create new instance with default embedded jshint src version
@@ -116,7 +116,7 @@ public class JsHintRunner {
 
 	/**
 	 * Create instance with custom jshint src file
-	 * 
+	 *
 	 * @param jshintSrc
 	 *            The jshint src file path. If null, the default embedded
 	 *            version will be used
@@ -130,7 +130,7 @@ public class JsHintRunner {
 
 	/**
 	 * Run JSHint over a list of one or more files
-	 * 
+	 *
 	 * @param files
 	 *            A list of absolute files
 	 * @param options
@@ -169,12 +169,12 @@ public class JsHintRunner {
 
 		// jshint options
 		ScriptableObject jsHintOpts = (ScriptableObject) ctx.newObject(global);
-		
+
 		for (Object key : options.keySet()) {
 			Object optionValue = options.get(key);
 			if(optionValue instanceof String) {
 				optionValue = parseOption((String)options.get(key));
-			}			
+			}
 			jsHintOpts.put((String) key, jsHintOpts, optionValue);
 		}
 		global.defineProperty("jsHintOpts", jsHintOpts, ScriptableObject.DONTENUM);
@@ -182,7 +182,7 @@ public class JsHintRunner {
 		// jshint globals
 		ScriptableObject jsHintGlobals = (ScriptableObject) ctx.newObject(global);
 		for (Object key : undefs.keySet()) {
-			boolean globalValue = Boolean.valueOf((String) undefs.get(key));			
+			boolean globalValue = Boolean.valueOf((String) undefs.get(key));
 			jsHintGlobals.put((String) key, jsHintGlobals, globalValue);
 		}
 		global.defineProperty("jsHintGlobals", jsHintGlobals, ScriptableObject.DONTENUM);
@@ -209,6 +209,8 @@ public class JsHintRunner {
 			global.put("currentCode", global, jsFileCode);
 			global.put("errors", global, ctx.newArray(global, 0));
 
+
+
 			ctx.evaluateReader(global, runJsHint.getCodeReader(), runJsHint.getName(), 0, null);
 
 			// extract lint errors
@@ -225,50 +227,43 @@ public class JsHintRunner {
 				// log detail for each error
 				Scriptable errorDetail = (Scriptable) errors.get(i, global);
 
-				try {
-					String reason = (String) errorDetail.get("reason", global);
-					int line = ((Number) errorDetail.get("line", global)).intValue();
-					int character = ((Number) errorDetail.get("character", global)).intValue();
-					String evidence = ((String) errorDetail.get("evidence", global)).replace(
-							"^\\s*(\\S*(\\s+\\S+)*)\\s*$", "$1");
+				String reason = errorDetail.get("reason", global).toString();
+				String line = errorDetail.get("line", global).toString();
+				int character = ((Number) errorDetail.get("character", global)).intValue();
+				String evidence = ((String) errorDetail.get("evidence", global)).replace(
+						"^\\s*(\\S*(\\s+\\S+)*)\\s*$", "$1");
+				String code = errorDetail.get("code", global).toString();
+				String severity = (String)errorDetail.get("severity", global);
 
-					JsHintError hintError = new JsHintError(reason, evidence, line, character);
-					result.addError(hintError);
 
-					if (logger != null) {
-						logger.log(PlainJsHintReporter.getIssueMessage(reason, evidence, line, character));
-					}
-				} catch (ClassCastException e) {
+				JsHintError hintError = new JsHintError(reason, evidence, line, character, severity, code);
+				result.addError(hintError);
 
-					if (logger != null) {
-						// TODO: See issue #1. Why is this happening?
-						logger.error(("Problem casting JShint error variable for previous error. See issue (#1) ("
-								+ e.getMessage() + ")"));
-					} else {
-						throw new RuntimeException(e);
-					}
+				if (logger != null) {
+					logger.log(jsFileName + ": " + reason + " (" + code + "): " + line);
 				}
+
 			}
 			report.addResult(result);
 		}
 
 		return report;
 	}
-	
+
 	public static Object parseOption(String option) {
-		
+
 		try {
-			Number numberVal = Double.parseDouble(option);	
+			Number numberVal = Double.parseDouble(option);
 			return numberVal;
-		} catch(NumberFormatException e) {			
+		} catch(NumberFormatException e) {
 		}
-		
+
 		if(option.equalsIgnoreCase("false") || option.equalsIgnoreCase("true")) {
 			boolean boolVal = Boolean.parseBoolean(option);
 			return boolVal;
 		}
-		
-		return option;		
+
+		return option;
 	}
 
 	public void setLogger(JsHintLogger logger) {

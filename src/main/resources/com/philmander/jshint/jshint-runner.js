@@ -12,7 +12,7 @@ this.currentCode = this.currentCode || null;
 
 this.jsHintOpts = this.jsHintOpts || {};
 this.defaultOpts = {
-	bitwise: true,	
+	bitwise: true,
 	browser: true,
 	curly: true,
 	eqeqeq: true,
@@ -39,13 +39,48 @@ this.errors = this.errors || [];
 var result = JSHINT(this.currentCode, this.jsHintOpts, this.jsHintGlobals);
 if(!result) {
 	for (var i = 0, err; err = JSHINT.errors[i]; i++) {
-		
+
 		this.errors.push({
-			file: this.currentFile, 
-			reason: err.reason, 
-			line: err.line, 
+			file: this.currentFile,
+			reason: err.reason,
+			line: new String(err.line),
 			character: err.character,
-			evidence: err.evidence || ""
+			evidence: err.evidence || "",
+			code: new String("jshint." + err.code),
+			severity: "error"
 		});
+	}
+
+	var warning = JSHINT.data();
+
+	if (warning.implieds) {
+		for (var j = 0; j < warning.implieds.length ; j++) {
+			var line = (typeof warning.implieds[j].line == "object") ? warning.implieds[j].line.join() : new String(warning.implieds[j].line);
+			this.errors.push({
+				file: this.currentFile,
+				reason: new String("Implied global '" + warning.implieds[j].name + "'"),
+				line: line,
+				character: 0,
+				evidence: '',
+				code: new String("jshint.implied-globals"),
+				severity: "warning"
+			});
+		};
+	}
+
+	if (warning.unused) {
+		for (var j = 0; j < warning.unused.length ; j++) {
+			var line = (typeof warning.unused[j].line == "object") ? warning.unused[j].line.join() : new String(warning.unused[j].line);
+
+			this.errors.push({
+				file: this.currentFile,
+				reason: new String("Unsed variable '" + warning.unused[j].name + "'"),
+				line: line,
+				character: 0,
+				evidence: '',
+				code: "jshint.implied-unuseds",
+				severity: "warning"
+			});
+		};
 	}
 }

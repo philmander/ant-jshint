@@ -22,24 +22,24 @@ public class PlainJsHintReporter implements JsHintReporter {
 	}
 
 	public String createReport() {
-		
+
 		StringBuilder output = new StringBuilder();
 
 		output.append("JSHint validation summary:\n");
-		
+
 		if (report.getTotalErrors() > 0) {
 			output.append("----------------------------------------------------------------------\n");
-			for(JsHintResult result : report.getResults()) { 
+			for(JsHintResult result : report.getResults()) {
 				output.append("\n");
 				output.append(getFileFailureMessage((result.getFile()) + "\n"));
 				for(JsHintError error : result.getErrors()) {
 					output.append(getIssueMessage(error.getReason(), error.getEvidence(), error.getLine(), error.getCharacter()) + "\n");
 				}
-				
+
 			}
 			output.append("----------------------------------------------------------------------\n");
 		}
-		
+
 		if (report.getTotalErrors()  > 0) {
 			output.append(getFailureMessage(report.getTotalErrors()));
 		} else {
@@ -55,7 +55,7 @@ public class PlainJsHintReporter implements JsHintReporter {
 		return "JSHint validation failed for " + file;
 	}
 
-	public static String getIssueMessage(String reason, String evidence, int line, int character) {
+	public static String getIssueMessage(String reason, String evidence, String line, int character) {
 		String msg = reason + " (line: " + line + ", character: " + character + ")\n > " + evidence;
 		return msg;
 	}

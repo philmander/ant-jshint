@@ -8,19 +8,22 @@ package com.philmander.jshint;
 public class JsHintError {
 
 	private String reason;
-	
 	private String evidence;
-			
-	private int line;
-	
+	private String line;
 	private int character;
+	private String code;
+	private String severity;
 
-	public JsHintError(String reason, String evidence, int line, int character) {
+
+
+	public JsHintError(String reason, String evidence, String line, int character, String severity, String code) {
 		super();
 		this.reason = reason;
 		this.evidence = evidence;
 		this.line = line;
 		this.character = character;
+		this.severity = severity;
+		this.code = code;
 	}
 
 	public String getReason() {
@@ -31,13 +34,23 @@ public class JsHintError {
 		return evidence;
 	}
 
-	public int getLine() {
+	public String getLine() {
 		return line;
 	}
 
 	public int getCharacter() {
 		return character;
 	}
-	
-	
+
+	public String getSeverity()
+	{
+		return severity;
+	}
+
+	public String getCode()
+	{
+		return code;
+	}
+
+
 }

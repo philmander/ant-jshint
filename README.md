@@ -42,7 +42,7 @@ as the optionsFile (interpreted as JSON)
 
 Attribute    | Description | Required
 ------------ | ----------- | ------------------
-type         | The type of report. Available values are `plain`, `xml` and `jslint-xml` (for compatibility with the JSLint plugins) | no (defaults to 'plain')
+type         | The type of report. Available values are `plain`, `xml, checkstyle` and `jslint-xml` (for compatibility with the JSLint plugins) | no (defaults to 'plain')
 destFile     | The file to write the report to | yes
 
 

@@ -8,10 +8,10 @@ import com.philmander.jshint.JsHintResult;
 
 public abstract class XmlReporter implements JsHintReporter {
 
-	private JsHintReport report;
+	protected JsHintReport report;
 
-	private String rootElement;
-	
+	protected String rootElement;
+
 	public XmlReporter(JsHintReport report, String rootElement) {
 
 		this.rootElement = rootElement;
@@ -32,7 +32,7 @@ public abstract class XmlReporter implements JsHintReporter {
 			output.append(">\n");
 			for (JsHintError error : result.getErrors()) {
 				output.append("        <issue");
-				output.append(attr("line", Integer.toString(error.getLine())));
+				output.append(attr("line", error.getLine()));
 				output.append(attr("char", Integer.toString(error.getCharacter())));
 				output.append(attr("reason", error.getReason()));
 				output.append(attr("evidence", error.getEvidence()));
@@ -45,7 +45,7 @@ public abstract class XmlReporter implements JsHintReporter {
 		return output.toString();
 	}
 
-	private String attr(String name, String value) {
+	protected String attr(String name, String value) {
 		String attr = " " + name + "=\"" + StringEscapeUtils.escapeXml(value) + "\"";
 		return attr;
 	}
