@@ -18,7 +18,8 @@ public abstract class XmlReporter implements JsHintReporter {
 		this.report = report;
 	}
 
-	public String createReport() {
+	@Override
+   public String createReport() {
 
 		StringBuilder output = new StringBuilder();
 

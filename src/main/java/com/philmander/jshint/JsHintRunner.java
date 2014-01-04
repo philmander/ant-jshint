@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -39,8 +40,6 @@ public class JsHintRunner {
 
 	/**
 	 * Basic, intital CLI implementation
-	 * 
-	 * @param args
 	 */
 	public static void main(String[] args) {
 
@@ -59,11 +58,13 @@ public class JsHintRunner {
 
 			JsHintLogger logger = new JsHintLogger() {
 
-				public void log(String msg) {
+				@Override
+            public void log(String msg) {
 					System.out.println("[jshint] " + msg);
 				}
 
-				public void error(String msg) {
+				@Override
+            public void error(String msg) {
 					System.err.println("[jshint] " + msg);
 				}
 			};
@@ -90,7 +91,7 @@ public class JsHintRunner {
 			JsHintReport report = runner.lint(files.toArray(new String[files.size()]), optionsProps, globalsProps);
 
 			if (report.getTotalErrors() > 0) {
-				logger.log(PlainJsHintReporter.getFailureMessage(report.getTotalErrors()));
+				logger.error(PlainJsHintReporter.getFailureMessage(report.getTotalErrors()));
 			} else {
 				logger.log(PlainJsHintReporter.getSuccessMessage(report.getNumFiles()));
 			}
@@ -136,9 +137,8 @@ public class JsHintRunner {
 	 * @param options
 	 *            A map of jshint options to apply
 	 * @return A JSHintReport object containing the full results data
-	 * @throws IOException
 	 */
-	public JsHintReport lint(String[] files, Properties options, Properties undefs) throws IOException {
+	public JsHintReport lint(String[] files, Map<Object, Object> options, Map<Object, Object> undefs) throws IOException {
 
 		JsHintReport report = new JsHintReport(files.length);
 
@@ -182,7 +182,7 @@ public class JsHintRunner {
 		// jshint globals
 		ScriptableObject jsHintGlobals = (ScriptableObject) ctx.newObject(global);
 		for (Object key : undefs.keySet()) {
-			boolean globalValue = Boolean.valueOf((String) undefs.get(key));			
+			boolean globalValue = Boolean.valueOf(undefs.get(key).toString());			
 			jsHintGlobals.put((String) key, jsHintGlobals, globalValue);
 		}
 		global.defineProperty("jsHintGlobals", jsHintGlobals, ScriptableObject.DONTENUM);
@@ -217,7 +217,7 @@ public class JsHintRunner {
 
 			if (numErrors > 0) {
 				if (logger != null) {
-					logger.log(PlainJsHintReporter.getFileFailureMessage(jsFileName));
+					logger.error(PlainJsHintReporter.getFileFailureMessage(jsFileName));
 				}
 			}
 			for (int i = 0; i < numErrors; i++) {
@@ -226,7 +226,7 @@ public class JsHintRunner {
 				Scriptable errorDetail = (Scriptable) errors.get(i, global);
 
 				try {
-					String reason = (String) errorDetail.get("reason", global);
+					String reason = errorDetail.get("reason", global).toString();
 					int line = ((Number) errorDetail.get("line", global)).intValue();
 					int character = ((Number) errorDetail.get("character", global)).intValue();
 					String evidence = ((String) errorDetail.get("evidence", global)).replace(
@@ -245,7 +245,7 @@ public class JsHintRunner {
 						logger.error(("Problem casting JShint error variable for previous error. See issue (#1) ("
 								+ e.getMessage() + ")"));
 					} else {
-						throw new RuntimeException(e);
+						throw e;
 					}
 				}
 			}

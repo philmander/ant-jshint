@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.LogLevel;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -109,27 +110,30 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 		}
 	}
 	
-	private Properties loadOptions() {
+	private Map<Object, Object> loadOptions() {
 
         if(optionsFile == null) {
             //default to use jshint rc
             optionsFile = getProject().getBaseDir() + "/" + JSHINTRC_FILE;
         }
 
-		Properties props = loadProperties(options, optionsFile);
-		logProperties("custom options", props);
+      Map<Object, Object> props = loadProperties(options, optionsFile);
+		if (props.size() > 0) {
+		   logProperties("custom options", props);
+      }
 
 		return props;
 	}
 	
-	private Properties loadGlobals() {
-		Properties props = loadProperties(globals, globalsFile);
-		logProperties("custom options", props);
-
+	private Map<Object, Object> loadGlobals() {
+	   Map<Object, Object> props = loadProperties(globals, globalsFile);
+      if (props.size() > 0) {
+         logProperties("custom globals", props);
+      }
 		return props;
 	}
 	
-	private Properties loadProperties(String propertiesList, String propertiesFilePath) {
+	private Map<Object, Object> loadProperties(String propertiesList, String propertiesFilePath) {
 		Properties props = new Properties();
 				
 		if (propertiesFilePath != null) {			
@@ -140,8 +144,7 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 				if (propertiesFile.exists()) {
 					if(propertiesFilePath.endsWith(".json") || propertiesFilePath.endsWith(JSHINTRC_FILE)) {
 						ObjectMapper mapper = new ObjectMapper();
-						@SuppressWarnings("unchecked")
-						Map<String, String> jsonProps = mapper.readValue(propertiesFile, Map.class);
+						Map<?,?> jsonProps = mapper.readValue(propertiesFile, Map.class);
 						props.putAll(jsonProps);
 					} else {							
 						FileInputStream inStream = new FileInputStream(propertiesFile);
@@ -151,9 +154,9 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 					throw new FileNotFoundException("Could not find properties file at " + propertiesFile.getAbsolutePath());
 				}
 			} catch (FileNotFoundException e) {
-				log(e.getMessage());
+				log(e.getMessage(), Project.MSG_ERR);
 			} catch (IOException e) {
-				log("Could not load properties file");
+            log("Could not load properties file: " + e.getMessage(), Project.MSG_ERR);
 			}
 		}
 	
@@ -168,11 +171,11 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 		return props;
 	}
 	
-	private void logProperties(String attrName, Properties props) {
+   private void logProperties(String attrName, Map<Object, Object> props) {
 		// log combined properties
 		StringBuilder propsBuilder = new StringBuilder();
 		for (Object propName : props.keySet()) {
-			boolean val = Boolean.valueOf(props.getProperty((String) propName));
+		   Object val = props.get(propName);
 			propsBuilder.append(propName + "=" + val + ",");
 		}
 		if (props.size() > 0) {
@@ -237,8 +240,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * The directory to scan for files to validate. Use includes to only
 	 * validate js files and excludes to omit files such as compressed js
 	 * libraries from js validation
-	 * 
-	 * @param dir
 	 */
 	public void setDir(File dir) {
 		this.dir = dir;
@@ -247,8 +248,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	/**
 	 * By default the ant task will fail the build if jshint finds any errors.
 	 * Set this to false for reporting purposes
-	 * 
-	 * @param fail
 	 */
 	public void setFail(boolean fail) {
 		this.fail = fail;
@@ -268,8 +267,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	 * Specify jshint options as a commas delimited list i.e. asi=true,
 	 * evil=false. These options override any options specified using the
 	 * optionsFile attribute
-	 * 
-	 * @param options
 	 */
 	public void setOptions(String options) {
 		this.options = options;
@@ -289,7 +286,6 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	
 	/**
 	 * A comma separated list of global variables to use when linting all files
-	 * @param globals
 	 */
 	public void setGlobals(String globals) {
 		this.globals = globals;
@@ -306,9 +302,10 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	}
 
 	/**
-	 * Ant error logging
+	 * Ant error logging.
 	 */
-	public void error(String msg) {
+	@Override
+   public void error(String msg) {
 		log(msg, LogLevel.ERR.getLevel());
 	}
 }

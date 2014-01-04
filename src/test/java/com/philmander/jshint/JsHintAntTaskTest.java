@@ -1,7 +1,6 @@
 package com.philmander.jshint;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
@@ -12,7 +11,6 @@ import com.philmander.jshint.report.PlainJsHintReporter;
 
 /**
  * @author Phil Mander
- *
  */
 public class JsHintAntTaskTest extends BuildFileTest
 {
@@ -22,7 +20,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     }
 
     @Test
-    public void testTask_includes() throws IOException {
+    public void testTask_includes() {
     	try {
     		executeTarget("testIncludes");	
     	} catch(BuildException e) {
@@ -32,7 +30,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     }
     
     @Test
-    public void testTask_options() throws IOException {
+    public void testTask_options() {
     	try {
     		executeTarget("testOptions");	
     	} catch(BuildException e) {
@@ -42,7 +40,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
     
 	@Test
-	public void testTask_optionsFile() throws IOException {
+	public void testTask_optionsFile() {
     	try {
     		executeTarget("testOptionsFile");	
     	} catch(BuildException e) {
@@ -52,7 +50,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
 	
 	@Test	
-	public void testTask_optionsJsonFile() throws IOException {
+	public void testTask_optionsJsonFile() {
     	try {
     		executeTarget("testOptionsJsonFile");	
     	} catch(BuildException e) {
@@ -62,8 +60,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
 
     @Test
-    @Ignore
-    public void testTask_optionsJshintrcFile() throws IOException {
+    public void testTask_optionsJshintrcFile() {
 
         File path = this.getProject().getBaseDir();
         String jshintrc = ".jshintrc";
@@ -82,7 +79,7 @@ public class JsHintAntTaskTest extends BuildFileTest
     }
 	
 	@Test
-	public void testTask_customFile() throws IOException {	
+	public void testTask_customFile() {	
     	try {
     		executeTarget("testCustomHintFile");	
     	} catch(BuildException e) {
@@ -91,7 +88,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
 	
 	@Test
-	public void testTask_globals() throws IOException {	
+	public void testTask_globals() {	
     	try {
     		executeTarget("testGlobals");	
     	} catch(BuildException e) {
@@ -101,7 +98,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
 	
 	@Test
-	public void testTask_globalsFile() throws IOException {	
+	public void testTask_globalsFile() {	
     	try {
     		executeTarget("testGlobalsFile");	
     	} catch(BuildException e) {
@@ -111,7 +108,7 @@ public class JsHintAntTaskTest extends BuildFileTest
 	}
 	
 	@Test
-	public void testTask_report() throws IOException {
+	public void testTask_report() {
     	
     	File reportPlain = new File("target/temp/jshint-report.txt");
     	File reportXml = new File("target/temp/jshint-report.xml");
