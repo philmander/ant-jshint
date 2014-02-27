@@ -145,6 +145,8 @@ public class JsHintRunner {
 		// start rhino
 		Context ctx = Context.enter();
 		ctx.setLanguageVersion(Context.VERSION_1_7);
+        // workaround for the 64k limit of rhino with enabled optimizations: set the Optimization Level to -1. See https://github.com/jshint/jshint/issues/1333
+		ctx.setOptimizationLevel(-1);
 		ScriptableObject global = ctx.initStandardObjects();
 
 		String[] names = { "print" };
