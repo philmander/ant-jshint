@@ -18,6 +18,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.philmander.jshint.report.CheckstyleReporter;
 import com.philmander.jshint.report.JsHintReporter;
 import com.philmander.jshint.report.PlainJsHintReporter;
 import com.philmander.jshint.report.XmlJsHintReporter;
@@ -36,6 +37,8 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	protected final String XML_REPORT = "xml"; 
 	
 	protected final String JSLINT_XML_REPORT = "jslint-xml";
+    
+    protected final String CHECKSTYLE_REPORT = "checkstyle";
 
     private final String JSHINTRC_FILE = ".jshintrc";
 	
@@ -191,15 +194,20 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 			JsHintReporter reporter = null;
 
 			// pick a reporter implementation
-			if (reportType.getType().trim().equalsIgnoreCase(PLAIN_REPORT)) {
-				reporter = new PlainJsHintReporter(report);
-			} else if (reportType.getType().trim().equalsIgnoreCase(XML_REPORT)) {
-				// default to plain reporter
-				reporter = new XmlJsHintReporter(report);
-			} else if(reportType.getType().trim().equalsIgnoreCase(JSLINT_XML_REPORT)) {
-				reporter = new XmlJsLintReporter(report);
-			}
-
+            switch(reportType.getType().trim()) {
+                case CHECKSTYLE_REPORT:
+                    reporter = new CheckstyleReporter(report);
+                    break;
+                case XML_REPORT:
+                    reporter = new XmlJsHintReporter(report);
+                    break;
+                case JSLINT_XML_REPORT:
+                    reporter = new XmlJsLintReporter(report);
+                    break;
+                default:
+                    reporter = new PlainJsHintReporter(report);
+            }
+                    
 			if (reportType.getDestFile() == null) {
 				error("Could not write a report, destFile attribute was not set");
 				continue;
