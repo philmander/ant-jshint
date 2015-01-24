@@ -1,3 +1,11 @@
+#This project is deprecated
+
+I won't being performing any maintanence on this project other than merging pull requests that merge automatically.
+
+My personal preference is now to use gulp + jshint instead.
+
+---
+
 #Ant task for JSHint
 
 Easily automate JSHint (http://www.jshint.com/) validation on your Javascript code base with Apache Ant.
