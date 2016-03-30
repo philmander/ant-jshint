@@ -238,7 +238,7 @@ public class JsHintRunner {
 					result.addError(hintError);
 
 					if (logger != null) {
-						logger.log(PlainJsHintReporter.getIssueMessage(reason, evidence, line, character));
+						logger.log(PlainJsHintReporter.getIssueMessage(jsFileName, reason, evidence, line, character));
 					}
 				} catch (ClassCastException e) {
 

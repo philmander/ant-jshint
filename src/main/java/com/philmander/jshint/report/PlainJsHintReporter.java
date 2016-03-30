@@ -34,7 +34,7 @@ public class PlainJsHintReporter implements JsHintReporter {
 				output.append("\n");
 				output.append(getFileFailureMessage((result.getFile()) + "\n"));
 				for(JsHintError error : result.getErrors()) {
-					output.append(getIssueMessage(error.getReason(), error.getEvidence(), error.getLine(), error.getCharacter()) + "\n");
+					output.append(getIssueMessage(result.getFile(), error.getReason(), error.getEvidence(), error.getLine(), error.getCharacter()) + "\n");
 				}
 				
 			}
@@ -56,8 +56,11 @@ public class PlainJsHintReporter implements JsHintReporter {
 		return "JSHint validation failed for " + file;
 	}
 
-	public static String getIssueMessage(String reason, String evidence, int line, int character) {
-		String msg = reason + " (line: " + line + ", character: " + character + ")\n > " + evidence;
+	public static String getIssueMessage(String file, String reason, String evidence, int line, int character) {
+		//String msg = reason + " (line: " + line + ", character: " + character + ")\n > " + evidence;
+                //running in IDE, after ant task run, we can click js file name and goto source file and line
+                //so added file name ve line
+                String msg = file + ":" + line + ":" + " " + reason + " " + evidence;
 		return msg;
 	}
 

@@ -40,6 +40,8 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
     private final String JSHINTRC_FILE = ".jshintrc";
 	
 	private File dir;
+        
+        private File file; //for single js file
 
 	private boolean fail = true;
 
@@ -66,12 +68,18 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	public void execute() throws BuildException {
 
 		checkAttributes();
-
-		DirectoryScanner dirScanner = getDirectoryScanner(dir);
-		String[] files = dirScanner.getIncludedFiles();
-
-		log("Validating files in " + dir.getAbsolutePath());
-
+                
+                String[] files = new String[]{};
+                if (dir != null) {
+                    DirectoryScanner dirScanner = getDirectoryScanner(dir);
+                    files = dirScanner.getIncludedFiles();
+                    log("Validating files in " + dir.getAbsolutePath());
+                } else if (file != null) {
+                    dir = file.getParentFile(); //içinde bulunduğu dizin
+                    files = new String[]{file.getName()}; //kısa ismi
+                    log("Validating file " + file.getAbsolutePath());
+                }
+                
 		if (files.length > 0) {
 
 			try {
@@ -224,12 +232,16 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	private void checkAttributes() {
 		String message = null;
 
-		if (dir == null) {
-			message = "Missing dir attribute";
-		} else if (!dir.exists()) {
+		if (dir == null && file == null) {
+			message = "Missing dir or file attribute";
+		} else if (dir != null && !dir.exists()) {
 			message = "Directoy does not exist";
-		} else if (!dir.isDirectory()) {
+		} else if (dir != null && !dir.isDirectory()) {
 			message = "Dir is not a directory";
+		} else if (file != null && !file.exists()) {
+			message = "File does not exist";
+		} else if (file != null && file.isDirectory()) {
+			message = "File is a directory";
 		}
 		if (message != null) {
 			throw new BuildException(message);
@@ -246,6 +258,15 @@ public class JsHintAntTask extends MatchingTask implements JsHintLogger {
 	}
 
 	/**
+	 * The file for validate.
+	 * validate js file and excludes to omit file such as compressed js
+	 * librarie from js validation
+	 */
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+        /**
 	 * By default the ant task will fail the build if jshint finds any errors.
 	 * Set this to false for reporting purposes
 	 */
